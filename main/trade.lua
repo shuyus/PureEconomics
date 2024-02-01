@@ -116,6 +116,7 @@ AddModRPCHandler("PureEconomics", "PEedit", PEEdit)
 
 
 local function PErecovery(player, name)
+    print("PErecovery",player,name,player.Network:IsServerAdmin())
     if not player.Network:IsServerAdmin() then return end
     pe_item_data:ClearItemChange(name)
 end

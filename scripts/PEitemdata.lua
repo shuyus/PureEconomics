@@ -1,20 +1,21 @@
+-- PEitemdata.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 负责所有物品数据的储存和管理，同步价格的功能由 PEWorldContext 组件 完成
+
 local LIST = require("PEitemlist")
 local TAB_ALL = {} -- 已定义价格物品列表，所有的价格查询都在这个表
 local TAB_UNPRICED = {} -- 文件未定义价格物品列表
 
---[[
-PEItemData只负责数据管理
-同步价格的功能由 PEWorldContext 组件 完成
-]]
+
 local PEItemData = Class(function(self)
-    self.filters = {} -- 物品类别的物品计数表
+    self.filters = {} -- 物品类别的可购买物品计数表
     self.special_filters = {} -- 特殊分类，不参与主面板的购买
     self.filter_num = 0 -- 面板显示的分类数量，不包括特殊分类
     self.noprice = {} -- 价格全部计算完成后仍然无价格物品列表，正常情况下CaculatePrice完成后该列表和TAB_UNPRICED都为空
     self.cannotbuy = {} -- 有价格但不能买的物品列表
     self:Init()
 
-    self:Print() -- TODO 删除
 end)
 
 --[[
@@ -28,7 +29,6 @@ function PEItemData:CaculatePrice(name) --
     if recipe == nil then
         TAB_UNPRICED[name] = nil
         RemoveByValue(self[filter], TAB_UNPRICED[name])
-        RemoveByValue(self[filter .. "all"], TAB_UNPRICED[name])
         self.filters[filter] = self.filters[filter] - 1
         self.noprice[name] = true
         return 0
@@ -47,7 +47,6 @@ function PEItemData:CaculatePrice(name) --
                 if query_price == 0 then
                     TAB_UNPRICED[name] = nil
                     RemoveByValue(self[filter], TAB_UNPRICED[name])
-                    RemoveByValue(self[filter .. "all"], TAB_UNPRICED[name])
                     self.filters[filter] = self.filters[filter] - 1
                     self.noprice[name] = true
                     return 0
@@ -73,18 +72,16 @@ function PEItemData:Init()
     for f, v in pairs(LIST) do
         self:AddFilter(f)
         self[f] = {} -- 商店面板使用的分类表
-        self[f .. "all"] = {} -- 给管理员面板使用的分类表
         for i, t in ipairs(v) do
             local name = t.name
             if t.canbuy == nil then
                 t.canbuy = true
             end
             t.filter = f
-            table.insert(self[f .. "all"], t)
             if TUNING.PUREECOMOMICS.UNLOCKEVERYTHING then t.canbuy = true end
+            table.insert(self[f], t)
             if t.canbuy then
                 self.filters[f] = self.filters[f] + 1
-                table.insert(self[f], t)
             else
                 self.cannotbuy[name] = t
             end
@@ -139,7 +136,7 @@ function PEItemData:AddItem(name, filter, price, canbuy)
     if self[filter] == nil then
         self:AddFilter(filter)
     end
-    self.filters[filter] = self.filters[filter] + 1
+    
     local info = {
         name = name,
         price = price,
@@ -147,12 +144,11 @@ function PEItemData:AddItem(name, filter, price, canbuy)
         canbuy = canbuy
     }
 
-    table.insert(self[filter.."all"], info)
-
-    if canbuy then
-        table.insert(self[filter], info)
-    else
+    table.insert(self[filter], info)
+    if not canbuy then
         self.cannotbuy[name] = info
+    else
+        self.filters[filter] = self.filters[filter] + 1
     end
 
     TAB_ALL[name] = info
@@ -165,58 +161,74 @@ end
 function PEItemData:ChangeCanBuy(name)
     if TAB_ALL[name].canbuy then
         TAB_ALL[name].canbuy = false
-        RemoveByValue(self[TAB_ALL[name].filter], TAB_ALL[name])
         self.cannotbuy[name] = TAB_ALL[name]
     else
         TAB_ALL[name].canbuy = true
-        table.insert(self[TAB_ALL[name].filter],TAB_ALL[name])
         self.cannotbuy[name] = nil
     end
 end
 
+--[[
+    info格式举例：
+    {
+        name = "log",
+        price = 100,
+        canbuy = false,
+        filter = "resource",
+        origin = { 
+            name = "log",
+            price = 7,
+            canbuy = true,
+            filter = "resource",
+        },
+    }
+]]
 function PEItemData:SetItemInfoWithoutSync(info)
     local name = info.name
 
     if TAB_ALL[name] then
-        if TheNet:GetIsServer() then
-            local origin = TAB_ALL[name].origin or deepcopy(TAB_ALL[name])
+        if TheNet:GetIsServer() and not info.origin then
+            local origin = TAB_ALL[name].origin or deepcopy(TAB_ALL[name]) --只保留最第一次的修改信息
             info.origin = origin
+        else
+            TAB_ALL[name].origin = info.origin --如果是恢复物品初始信息，服务端发送的info不含origin,但要清除掉客户端信息的origin
         end
 
-        if info.canbuy ~= TAB_ALL[name].canbuy then
+        if info.canbuy and info.canbuy ~= TAB_ALL[name].canbuy then
             self:ChangeCanBuy(name)
         end
 
         for k, v in pairs(info) do
-            TAB_ALL[name][k] = v
+            TAB_ALL[name][k] = v  --只修改info里有的项目
         end
-
         
-
         return true
     end
 
     return false
 end
 
-function PEItemData:SetItemInfo(info)
+--服务端调用此方法会触发到客户端和其它世界的同步
+function PEItemData:SetItemInfo(info,shard_sync)
     local name = info.name
     if not TAB_ALL[name] then
         return false
     end
 
-    if self:SetItemInfoWithoutSync(info) and TheNet:GetIsServer() then -- 服务端才需要记录改变
+    if self:SetItemInfoWithoutSync(info) and TheNet:GetIsServer() then
+        if shard_sync==nil then shard_sync = true end
         local _info = deepcopy(TAB_ALL[name])
-        TheWorld.components.peworldcontext:AddChanged(_info)
-
+        TheWorld.components.peworldcontext:AddChanged(_info,shard_sync)
         return true
     end
 
     return false
 end
 
+
+
 function PEItemData:ClearItemChange(name)
-    if not TAB_ALL[name] and not TAB_ALL[name].origin then
+    if not TAB_ALL[name] or not TAB_ALL[name].origin then
         return false
     end
     local obj = TAB_ALL[name]
@@ -230,6 +242,10 @@ function PEItemData:ClearItemChange(name)
         obj[k] = v
     end
 
+    if TheNet:GetIsServer() then
+        TheWorld.components.peworldcontext:RemoveChanged(name,true)
+    end
+
     return true
 end
 
@@ -237,6 +253,7 @@ function PEItemData:GetItem(name)
     return TAB_ALL[name]
 end
 
+--返回信息的深拷贝
 function PEItemData:GetItemInfo(name)
     return TAB_ALL[name] and deepcopy(TAB_ALL[name])
 end
@@ -256,10 +273,10 @@ function PEItemData:GetItemPrice(name)
 end
 
 function PEItemData:GetItemsOfFilter(filter)
-    return filter and self[filter] or self[filter.."all"]
+    return self[filter]
 end
 
-function PEItemData:GetItemNumOfFilter(filter)
+function PEItemData:GetBuyableItemNumOfFilter(filter)
     return self.filters[filter] or 0
 end
 
@@ -270,6 +287,11 @@ end
 function PEItemData:RemoveItem(name)
     self.noprice[name] = true
     local filter = TAB_ALL[name].filter
+    if not TAB_ALL[name].canbuy then
+        self.cannotbuy[name] = info
+    else
+        self.filters[filter] = self.filters[filter] + 1
+    end
     RemoveByValue(self[filter], TAB_ALL[name])
     TAB_ALL[name] = nil
     if next(self[filter]) == nil then
@@ -279,11 +301,7 @@ function PEItemData:RemoveItem(name)
     end
 end
 
-function PEItemData:Print()
-    -- print("===priced=====================================")
-    -- for name,v in pairs(TAB_ALL) do
-    -- 	print(name,v.price,v.filter)
-    -- end
+function PEItemData:DebugPrint()
     print("===noprice=====================================")
     for name, v in pairs(self.noprice) do
         print(name)

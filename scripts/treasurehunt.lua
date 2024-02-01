@@ -197,7 +197,7 @@ local internalloot =
 		loot = 
 		{
 			goldnugget =20,	
-			dubloon =1,
+			--dubloon =1,
 			eyebrellahat=1,
 			beargervest =1,
 			oinc100_yuan = 10,
@@ -373,7 +373,7 @@ local internalloot =
 	{
 		loot = 
 		{
-			dubloon = 1,
+			--dubloon = 1,
 		},
 	},
 	["firestarter"] = 

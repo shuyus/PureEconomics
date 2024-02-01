@@ -1,8 +1,15 @@
+-- PEitemlist.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 提供原始的商品信息，由PEItemData读取
+--        canbuy为true代表该物品可以在商店在售列表买到
+--		  参与买卖的且无法合成的物品必须在这里标注基础价格
+--		  料理不算可合成物品，必须标注价格
+--		  价格为nil的物品必须是可合成的，它们在PEItemData初始化时根据合成材料完成计算
+
 local PE_GOODS_LIST={}
--- \{name = "(\w+)", price = (\w+)\}
---参与商店且无法合成的物品必须在这里标注基础价格
---料理不算可合成物品，必须标注价格
---价格为nil的物品必须是可合成的，它们在PEItemData初始化时根据合成材料完成计算
+
+
 PE_GOODS_LIST.food =
 {
 	{name = "kabobs", price = 36},--肉串

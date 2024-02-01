@@ -1,7 +1,10 @@
+-- PEgrid.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 单页格子的集合，格子的具体内容由自定义的构造函数生成
+
 local Widget = require "widgets/widget"
---[[
-一张格子平面，改自官方Grid
-]]
+
 local Grid = Class(Widget, function(self,index)
     Widget._ctor(self, "GRID"..index)
     self.index = index
@@ -39,29 +42,6 @@ end
 function Grid:UseNaturalLayout()
     assert(#self.children == 0, "Call UseNaturalLayout before adding any items to the grid!")
     self.layout_left_to_right_top_to_bottom = true
-end
-
-function Grid:AllHide()
-	for k,v in pairs(self.items_by_coords) do
-		for k,v in pairs(v) do
-			v:Hide()
-			v:MoveToBack()
-		end
-	end
-	self:Hide()
-	self:MoveToBack()
-end
-
-
-function Grid:AllShow()
-	for k,v in pairs(self.items_by_coords) do
-		for k,v in pairs(v) do
-			v:Show()
-			v:MoveToFront()
-		end
-	end
-	self:Show()
-	self:MoveToFront()
 end
 
 function Grid:Clear()
@@ -181,7 +161,7 @@ function Grid:_Layout(c,r, widget)
     if self.layout_left_to_right_top_to_bottom then
         row_on_screen = 1 - r
     end
-	widget:SetPosition(Vector3(self.h_offset*col_on_screen, self.v_offset*row_on_screen, 0))
+	widget:SetPosition(self.h_offset*col_on_screen, self.v_offset*row_on_screen, 0)
 end
 
 -- Add a list of items to the grid.

@@ -1,3 +1,8 @@
+-- PEgridlevel.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 某一分类的格子的集合，包含多个Grid
+
 local Widget = require "widgets/widget"
 local Grid = require "widgets/PEgrid"
 
@@ -21,7 +26,8 @@ function GridLevel:InitByGrids(grids)
 	for i,v in ipairs(grids) do
 		v.index = i
 		self:AddChild(v)
-		v:AllHide()
+		v:Hide()
+		v:MoveToBack()
 	end
 end
 
@@ -30,10 +36,12 @@ function GridLevel:ShowGrid(index)
 	assert(index > 0 and index <= self.level_num, "Invaid Index")
 
 	if self.current_grid then
-		self.current_grid:AllHide()
+		self.current_grid:Hide()
+		self.current_grid:MoveToBack()
 	end
-	self.grids[index]:AllShow()
-
+	self.grids[index]:MoveToFront()
+	self.grids[index]:Show()
+	
 	self.current_grid = self.grids[index]
 
 	self:UpdateButtonStatus()
@@ -43,7 +51,7 @@ function GridLevel:CloseGrid(index)
 	if not index then index = self.current_grid.index end
 	assert(index and index > 0 and index <= self.level_num, "Invaid Index")
 
-	self.grids[index]:AllHide()
+	self.grids[index]:Hide()
 	self.grids[index]:MoveToBack()
 
 end

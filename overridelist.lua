@@ -26,6 +26,13 @@ local add_list = {
     -------------------------------------------------
 }
 
+local add_filter = {
+
+    ------------------------------------------------
+    --{name = "newfilter", zh ="新分类名",en = "New Type Name"},
+    -------------------------------------------------
+}
+
 GLOBAL.pe_context.overrides = override_list
 GLOBAL.pe_context.addlist = add_list
 override_list = nil

@@ -1,4 +1,7 @@
--- UI使用，UI显示按下表排列
+-- PEfilterlist.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.20
+-- Using: 提供给UI固定分类顺序
 
 local PE_FILTER_LIST={
 	{id = "food"},

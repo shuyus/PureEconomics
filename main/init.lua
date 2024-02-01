@@ -3,12 +3,12 @@ GLOBAL.isnum = function(vla) return type(vla) == "number" end
 GLOBAL.isnil = function(vla) return type(vla) == "nil" end
 GLOBAL.isbool = function(vla) return type(vla) == "boolean" end
 GLOBAL.istbl = function(vla) return type(vla) == "table" end
-GLOBAL.isfnn = function(vla) return type(vla) == "function" end
+GLOBAL.isfn = function(vla) return type(vla) == "function" end
 GLOBAL.isuser = function(vla) return type(vla) == "userdata" end
 
 
 
---从世界连接时，让主世界同步信息到从世界
+-- 从世界 连接时，让 主世界 同步信息到从世界
 if TheNet:GetIsServer() and TheShard:IsMaster() then
 
     local old_Shard_UpdateWorldState = GLOBAL.Shard_UpdateWorldState

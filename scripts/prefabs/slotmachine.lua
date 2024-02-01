@@ -283,10 +283,7 @@ local function PickPrize(inst,item_prefab,giver)
 			-- impossible!
 			-- print("impossible slot machine prizevalue!", prizevalue)
 		end
-	elseif item_prefab== "oinc100_yuan" then   --trinket_9 (пуговицы)
-		prizevalue = "good"
-		inst.prize = weighted_random_choice(goodspawns)--
-	elseif item_prefab=="dubloon" then
+	elseif item_prefab== "oinc100_yuan" then   
 		prizevalue = "good"
 		inst.prize = weighted_random_choice(goodspawns)--
 	else
@@ -351,7 +348,6 @@ local function DoneSpinning(inst)
 	inst.prize = nil
 	inst.prizevalue = nil
 	
-	-- print("Slot machine has "..tostring(inst.coins).." dubloons.")
 	inst.sg:GoToState("fake_idle")
 end
 
@@ -363,8 +359,7 @@ end
 
 local function ShouldAcceptItem(inst, item)
 	if not inst.busy and ((item.prefab == "oinc10_yuan") 
-		or (item.prefab == "oinc100_yuan") 
-		or (item.prefab == "dubloon"))then
+		or (item.prefab == "oinc100_yuan") )then
 			return true
 	end
 
@@ -454,24 +449,18 @@ local function fn()
 		return inst
 	end
 
-	--inst.OnSave = OnSave
-	--inst.OnLoad = OnLoad
 
 	inst.DoneSpinning = DoneSpinning
 	inst.busy = false
 	inst.sounds = sounds
 
-	-- keeps track of how many dubloons have been added
+
 	inst.coins = 0
 	
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("lootdropper")
 
-	--inst:AddComponent("payable")
-	--inst.components.payable:SetAcceptTest(ShouldAcceptItem)
-	--inst.components.payable.onaccept = OnGetItemFromPlayer
-	--inst.components.payable.onrefuse = OnRefuseItem
 	inst:AddComponent("trader")
 	inst.components.trader:SetAcceptTest(ShouldAcceptItem)
 	inst.components.trader.onaccept = OnGetItemFromPlayer

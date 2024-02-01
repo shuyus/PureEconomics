@@ -1,3 +1,8 @@
+-- PEshopplain.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 商店页面的主面板
+
 local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
@@ -69,6 +74,7 @@ local edit_oncontrol = function(self, control, down)
 				self.down = false
 				self:SetPosition(self.o_pos)
 				if control == CONTROL_ACCEPT then
+					self.main.current_edit_cell = self.parent
 					self.main.edit_plain:SetItem(self.item_name)
 					self.main.edit_plain:Show()
 					self.main.edit_plain:MoveToFront()
@@ -81,11 +87,13 @@ local edit_oncontrol = function(self, control, down)
 	end
 end
 
-
-local function CellWidgetsCtor(name, isedit, main)
+-- 生成商品格子容器
+-- 
+local function CellWidgetsCtor(info, isedit, main)
 	if isedit == nil then isedit = false end
+	local name = info.name
     local w = Widget("item-cell-".. name)
-    w:Hide()
+	--w:Hide()
 	----------------
 	w.back = w:AddChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_known.tex", "cookbook_known_selected.tex"))
 	w.back:SetFocusScale(cell_size/base_size + .05, cell_size/base_size + .05)
@@ -93,9 +101,10 @@ local function CellWidgetsCtor(name, isedit, main)
 	w.back.ongainfocusfn = function() end
 	w.back.main = main
 	w.back.item_name = name
+	w.back.canbuy = info.canbuy
 	w.focus_forward = w.back --TODO
 
-	w.info =  w:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small.tex", "button_small.tex", nil, nil, {1,1}, {0,0}))
+	w.info = w:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small.tex", "button_small.tex", nil, nil, {1,1}, {0,0}))
 	w.info:SetPosition(1,-50)
 	w.info:SetNormalScale(cell_size/base_size*1.4, cell_size/base_size*1.4)
 	local show_price = item_data:GetItemPrice(name) or "undfined"
@@ -130,14 +139,18 @@ local PEShopPlain = Class(Widget, function(self, owner)
     local backdrop = self.root:AddChild(Image("images/quagmire_recipebook.xml", "quagmire_recipe_menu_bg.tex"))
     backdrop:ScaleToSize(945, 577.5)
 
-	self.current_mode = "user"
+	self.current_mode = TUNING.PUREECOMOMICS.USER_MODE
 	self.level_manager = self.root:AddChild(GridLevelManager())
 	self.level_manager:SetPosition(0,-20)
+	-- self.level_manager:SetDisplayFilterFn(function(cell_widget)
+	-- 	return self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE or cell_widget.back.canbuy
+	-- end)
 
     self.tabs = {}
-	self:SwitchMode("user")
+	self:SwitchMode(TUNING.PUREECOMOMICS.USER_MODE)
 
 	if TheNet:GetIsServerAdmin() then
+		self.current_edit_cell = nil
 		local edit_button = self.root:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, {1,1}, {0,0}))
 		self.edit_button = edit_button
 		edit_button:SetText(STRINGS.PUREECOMOMICS.EDIT_BUTTON)
@@ -146,7 +159,7 @@ local PEShopPlain = Class(Widget, function(self, owner)
 		edit_button:SetTextSize(30)
 		edit_button:SetOnClick(function()
 			self:SwitchMode()
-			if self.current_mode == "admin" then 
+			if self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE then 
 				edit_button:SetText(STRINGS.PUREECOMOMICS.FINISH_EDIT_BUTTON)
 			else
 				edit_button:SetText(STRINGS.PUREECOMOMICS.EDIT_BUTTON)
@@ -157,7 +170,11 @@ local PEShopPlain = Class(Widget, function(self, owner)
 		end)
 		local edit_plain = self.root:AddChild(Edit())
 		self.edit_plain = edit_plain
-		edit_plain:SetPosition(100,100)
+		edit_plain:SetPosition(150,80,0)
+		edit_plain:SetSubmitCallBack(function(new_price,canbuy)
+			self.current_edit_cell.info:SetText(new_price.."G")
+			self.current_edit_cell.back.canbuy=canbuy
+		end)
 		edit_plain:Hide()
 		edit_plain:MoveToBack()
 	end
@@ -165,34 +182,11 @@ local PEShopPlain = Class(Widget, function(self, owner)
 
 	self:_MakeButton()
 	self:_MakeInfo()
-	self:_MakeSpecial()
+	
 end)
 
 function PEShopPlain:UpdateCash()
 	self.info.cash_num:SetString(ThePlayer.replica.peplayercontext:GetCash())
-end
-
-function PEShopPlain:_MakeTabLevel()
-	local _index = 1
-	if #self.tabs ~= 0 then
-		for i = #self.tabs, 1, -1 do
-			local tab = self.tabs[i]
-			if tab then
-				table.remove(self.tabs,i)
-				tab:Kill()
-			end
-		end
-	end
-
-	for i,t in pairs(arr_filter) do
-		local filter = t.id
-		if self.current_mode == "admin" then filter = filter.."all" end
-		if not item_data.special_filters[filter] then
-			table.insert(self.tabs, self.root:AddChild(self:_MakeTab(filter,_index)))
-			self:_AddLevel(filter)
-			_index = _index + 1
-		end
-	end
 end
 
 function PEShopPlain:_PositionTabs(w, y)
@@ -206,14 +200,24 @@ end
 function PEShopPlain:_MakeSpecial()
 	local all_cells = {}
 
+	if self.special then
+		self.special:Kill()
+		self.special = nil
+	end
+
+	local isedit = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE
+
 	for i,t in ipairs(item_data:GetItemsOfFilter("special")) do
-    	table.insert(all_cells,CellWidgetsCtor(t.name,false,self))
+		if self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE or t.canbuy then
+    		table.insert(all_cells,CellWidgetsCtor(t,isedit,self))
+		end
     end
 	
 	self.special = self.root:AddChild(Grid("special"))
 	self.special:InitGrid(4, 80, 110, all_cells)
 	self.special:SetPosition(150,-150,0)
-	self.special:AllShow()
+	self.special:Show()
+	self.special:MoveToFront()
 end
 
 function PEShopPlain:_MakeInfo()
@@ -250,11 +254,10 @@ end
 
 function PEShopPlain:_MakeTab(name, index)
 	local tab = ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex", nil, nil, nil, "quagmire_recipe_tab_active.tex")
-	--tab:SetPosition(-260 + 240*(i-1), 285)
 	tab.filter = name
 	tab:SetFocusScale(.5, .7)
 	tab:SetNormalScale(.5, .7)
-	tab:SetText(STRINGS.PUREECOMOMICS.FILTERS[string.gsub(name,"all","")])
+	tab:SetText(STRINGS.PUREECOMOMICS.FILTERS[name])
 	tab:SetTextSize(22)
 	tab:SetFont(HEADERFONT)
 	tab:SetTextColour(UICOLOURS.GOLD)
@@ -277,20 +280,48 @@ end
 
 function PEShopPlain:_AddLevel(filter)
     local all_cells = {}
-	local isedit = self.current_mode == "admin" and true or false
+	local isedit = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE
 
     for i,t in ipairs(item_data:GetItemsOfFilter(filter)) do
-    	table.insert(all_cells,CellWidgetsCtor(t.name,isedit,self))
+		-- 这里过滤不可买的物品
+		if self.current_mode==TUNING.PUREECOMOMICS.ADMIN_MODE or t.canbuy then
+    		table.insert(all_cells,CellWidgetsCtor(t,isedit,self))
+		end
     end
 
     self.level_manager:AddLevel(filter, all_cells, 22, 6, 80, 110)
 
 end
 
+
+function PEShopPlain:_MakeTabLevel()
+	local _index = 1
+	if #self.tabs ~= 0 then
+		for i = #self.tabs, 1, -1 do
+			local tab = self.tabs[i]
+			if tab then
+				table.remove(self.tabs,i)
+				tab:Kill()
+			end
+		end
+	end
+
+	for i,t in pairs(arr_filter) do
+		local filter = t.id
+		if not item_data.special_filters[filter] then
+			table.insert(self.tabs, self.root:AddChild(self:_MakeTab(filter,_index)))
+			self:_AddLevel(filter)
+			_index = _index + 1
+		end
+	end
+end
+
+
 function PEShopPlain:SwitchMode(mode)
 	self.level_manager:ClearAllLevels()
 	if mode == nil then
-		self.current_mode = self.current_mode == "admin" and "user" or "admin"
+		self.current_mode = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE and 
+							TUNING.PUREECOMOMICS.USER_MODE or TUNING.PUREECOMOMICS.ADMIN_MODE
 	else
 		self.current_mode = mode
 	end
@@ -302,6 +333,8 @@ function PEShopPlain:SwitchMode(mode)
 	self:_PositionTabs(130, 310)
 	self.level_manager:AdjustLevelPosition(-400, 200)
 	self.level_manager:ChooseLevel(self.last_selected.filter)
+
+	self:_MakeSpecial()
 end
 
 
