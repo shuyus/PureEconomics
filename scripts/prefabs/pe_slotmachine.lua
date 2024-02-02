@@ -1,4 +1,5 @@
 require "prefabutil"
+local treasure = require "PEslotmachinedata"
 
 local prefabs =
 {	
@@ -9,9 +10,6 @@ local prefabs =
 	"coffeebush",
 }
 
-
--- A weighted average list of prizes, the bigger the number, the more likely it is.
--- It's based off altar_prototyper.lua
 local goodspawns = 
 {
 	
@@ -79,10 +77,6 @@ local okspawns =
 	slot_jerky = 50,
 	slot_coconutty = 50,
 	slot_bonesharded = 50,
-	
-
-
-
 }
 
 local badspawns =
@@ -108,12 +102,6 @@ local badspawns =
 	--trinket = 100,
 }
 
-local from_trinket_spawns = { 
-}
-for i=1,45 do
-	from_trinket_spawns["t"..i] = 1
-end
-
 -- weighted_random_choice for bad, ok, good prize lists 
 local prizevalues =
 {
@@ -127,7 +115,7 @@ local actions =
 {
 }
 
-local treasurehunt = require "treasurehunt"
+
 
 --Check treasurehunt
 do
@@ -472,21 +460,15 @@ local function fn()
     inst.components.workable:SetWorkLeft(2)
     inst.components.workable:SetOnFinishCallback(onhammered)
 
-	--inst:AddComponent("sanityaura")
-	--inst.components.sanityaura.aurafn = CalcSanityAura
-
-	--inst:AddComponent("floodable")
-	--inst.components.floodable.onStartFlooded = OnFloodedStart
-	--inst.components.floodable.onStopFlooded = OnFloodedEnd
-	--inst.components.floodable.floodEffect = "shock_machines_fx"
-	--inst.components.floodable.floodSound = "dontstarve_DLC002/creatures/jellyfish/electric_land"
+	inst.OnSave = OnSave
+	inst.OnLoad = OnLoad
 
 	inst:SetStateGraph("SGslotmachine")
 
 	return inst
 end
 
-return Prefab( "slotmachine", fn, assets, prefabs),
-MakePlacer("slotmachine_placer","slot_machine","slot_machine","idle")
+return Prefab( "pe_slotmachine", fn, assets, prefabs),
+MakePlacer("pe_slotmachine_placer","slot_machine","slot_machine","idle")
 
 

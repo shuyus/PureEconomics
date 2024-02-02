@@ -11,5 +11,5 @@ if not TUNING.PUREECOMOMICS.DISABLECOFFEE then
 end
 
 if not TUNING.PUREECOMOMICS.DISABLESLOTMACHINE then
-	table.insert(PrefabFiles,"slotmachine")
+	table.insert(PrefabFiles,"pe_slotmachine")
 end
