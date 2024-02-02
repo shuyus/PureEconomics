@@ -1,4 +1,5 @@
-.vscode/sftp.json
+.vscode/
+.deprecated/
 pureeconomics.code-workspace
 TODO
-.deprecated
+exported/

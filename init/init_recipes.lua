@@ -9,7 +9,7 @@ AddRecipe2(
     }, {"STRUCTURES" }
 )
 
-if not TUNING.PUREECOMOMICS.DISABLECOFFEE then
+if not TUNING.PUREECOMOMICS.DISABLE_COFFEE then
     AddIngredientValues({"coffeebeans"}, {veggie=.5})
     AddIngredientValues({"coffeebeans_cooked"}, {veggie=1})
     AddCookerRecipe("cookpot", {
@@ -32,7 +32,7 @@ if not TUNING.PUREECOMOMICS.DISABLECOFFEE then
 end
 
 
-if not TUNING.PUREECOMOMICS.DISABLESLOTMACHINE then
+if not TUNING.PUREECOMOMICS.DISABLE_SLOTMACHINE then
     AddRecipe2(
         "slotmachine", {
             Ingredient("boards", 5)}, 

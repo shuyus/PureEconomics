@@ -5,6 +5,7 @@ local PEPlayerContext = Class(function(self, inst)
     self.inst = inst
     self.cash = net_int(inst.GUID,"pecash","pe_cash_changed")
     self.deposit = net_int(inst.GUID,"pedeposit","pe_deposit_changed")
+    self.precious = {}
 
     if not TheNet:IsDedicated() then
         local function _onchanged()
@@ -37,6 +38,26 @@ end
 function PEPlayerContext:GetDeposit()
     return self.deposit:value()
 end
+
+function PEPlayerContext:IsItemInPreciousArray(name)
+	return table.contains(self.precious,name)
+end
+
+function PEPlayerContext:GetPreciousArray()
+    if TheWorld.ismastersim then
+        return self.inst.components.peplayercontext:GetPreciousArray()
+    end
+	return self.precious
+end
+
+function PEPlayerContext:SetPreciousArray(array)
+    if TheWorld.ismastersim then
+        self.inst.components.peplayercontext:SetPreciousArray(array)
+        return
+    end
+    self.precious = deepcopy(array)
+end
+
 
 
 return PEPlayerContext

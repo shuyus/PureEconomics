@@ -1,12 +1,11 @@
 -- PEitemdata.lua
 -- Author: 勿言
--- LastEdit: 2024.1.31
+-- LastEdit: 2024.2.2
 -- Using: 负责所有物品数据的储存和管理，同步价格的功能由 PEWorldContext 组件 完成
 
 local LIST = require("PEitemlist")
 local TAB_ALL = {} -- 已定义价格物品列表，所有的价格查询都在这个表
 local TAB_UNPRICED = {} -- 文件未定义价格物品列表
-
 
 local PEItemData = Class(function(self)
     self.filters = {} -- 物品类别的可购买物品计数表
@@ -15,7 +14,6 @@ local PEItemData = Class(function(self)
     self.noprice = {} -- 价格全部计算完成后仍然无价格物品列表，正常情况下CaculatePrice完成后该列表和TAB_UNPRICED都为空
     self.cannotbuy = {} -- 有价格但不能买的物品列表
     self:Init()
-
 end)
 
 --[[
@@ -78,7 +76,7 @@ function PEItemData:Init()
                 t.canbuy = true
             end
             t.filter = f
-            if TUNING.PUREECOMOMICS.UNLOCKEVERYTHING then t.canbuy = true end
+            if TUNING.PUREECOMOMICS.UNLOCK_EVERYTHING then t.canbuy = true end
             table.insert(self[f], t)
             if t.canbuy then
                 self.filters[f] = self.filters[f] + 1
@@ -100,7 +98,7 @@ function PEItemData:Init()
     self:AddSpecial("special")
     self:AddSpecial("blueprint")
 
-    if TUNING.PUREECOMOMICS.DISABLECOFFEE then
+    if TUNING.PUREECOMOMICS.DISABLE_COFFEE then
         RemoveByValue(self.special, TAB_ALL["coffee"])
         RemoveByValue(self.specialall, TAB_ALL["coffee"])
         TAB_ALL["coffee"] = nil
@@ -272,6 +270,16 @@ function PEItemData:GetItemPrice(name)
     return nil
 end
 
+function PEItemData:GetItemsByNameArray(array)
+    local info_list = {}
+    for i,name in ipairs(array) do
+        if TAB_ALL[name] then
+            table.insert(info_list, TAB_ALL[name])
+        end
+    end
+    return info_list
+end
+
 function PEItemData:GetItemsOfFilter(filter)
     return self[filter]
 end
@@ -302,13 +310,13 @@ function PEItemData:RemoveItem(name)
 end
 
 function PEItemData:DebugPrint()
-    print("===noprice=====================================")
+    dprint("===noprice=====================================")
     for name, v in pairs(self.noprice) do
-        print(name)
+        dprint(name)
     end
-    print("===unpriced=====================================")
+    dprint("===unpriced=====================================")
     for name, v in pairs(TAB_UNPRICED) do
-        print(name, v.price, v.filter)
+        dprint(name, v.price, v.filter)
     end
 end
 

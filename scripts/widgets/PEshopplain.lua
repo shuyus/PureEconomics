@@ -1,6 +1,6 @@
 -- PEshopplain.lua
 -- Author: 勿言
--- LastEdit: 2024.1.31
+-- LastEdit: 2024.2.2
 -- Using: 商店页面的主面板
 
 local Widget = require "widgets/widget"
@@ -20,6 +20,7 @@ local SINGLE_PAGE_NUM = 22
 local base_size = 128
 local cell_size = 73
 local icon_size = 20 / (cell_size/base_size)
+
 
 local player_oncontrol = function(self, control, down)--参考自简单经济学
 	if not self:IsEnabled() or not self.focus or self:IsSelected() then return end
@@ -129,6 +130,18 @@ local function CellWidgetsCtor(info, isedit, main)
 
 
 	return w
+end
+
+local function GetItemListProxy(filter,current_mode)
+	if current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE then return item_data:GetItemsOfFilter(filter) end
+
+	if filter == "precious" then
+		if TUNING.PUREECOMOMICS.UNLOCK_PRECIOUS then return item_data:GetItemsOfFilter(filter) end
+		local array = ThePlayer.replica.peplayercontext:GetPreciousArray()
+		return item_data:GetItemsByNameArray(array)
+	else
+		return item_data:GetItemsOfFilter(filter)
+	end
 end
 
 local PEShopPlain = Class(Widget, function(self, owner)
@@ -282,9 +295,9 @@ function PEShopPlain:_AddLevel(filter)
     local all_cells = {}
 	local isedit = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE
 
-    for i,t in ipairs(item_data:GetItemsOfFilter(filter)) do
-		-- 这里过滤不可买的物品
-		if self.current_mode==TUNING.PUREECOMOMICS.ADMIN_MODE or t.canbuy then
+
+    for i,t in ipairs(GetItemListProxy(filter,self.current_mode)) do
+		if self.current_mode==TUNING.PUREECOMOMICS.ADMIN_MODE or t.canbuy then -- 这里过滤不可买的物品
     		table.insert(all_cells,CellWidgetsCtor(t,isedit,self))
 		end
     end

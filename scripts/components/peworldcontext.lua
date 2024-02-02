@@ -25,9 +25,14 @@ local PEWorldContext = Class(function(self, world)
     self.inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 
     self:Init()
+
+    self.inst:DoTaskInTime(.1,function()
+        self:SyncListToClient()
+        self:SyncListToShard()
+    end)
 end)
 
--- 组件初始化时先应用覆盖列表的信息，暂不同步
+-- 组件初始化时先应用覆盖列表的信息，若是加载则再执行OnLoad，完成后再同步
 function PEWorldContext:Init()
     for i, v in ipairs(override_list) do
         item_data:SetItemInfoWithoutSync(v)
@@ -58,6 +63,7 @@ end
 
 
 function PEWorldContext:SyncToClient(name, userid)
+    if ThePlayer and ThePlayer.userid == userid then return end  --不开洞的房主不需要给自己发
     local info = item_data:GetItemInfo(name)
     if not info then
         return false
@@ -90,6 +96,7 @@ function PEWorldContext:SyncToShard(name, shardid)
 end
 
 function PEWorldContext:SyncListToClient(userid)
+    if ThePlayer and ThePlayer.userid == userid then return end
     SendModRPCToClient(GetClientModRPC("PureEconomics", "PEclientsyncall"), userid, DataDumper(self.changed, nil, true))
 end
 
@@ -110,9 +117,6 @@ function PEWorldContext:OnLoad(data)
             self.changed[v.name] = v
         end
     end
-
-    self:SyncListToClient()
-    self:SyncListToShard()
 end
 
 return PEWorldContext

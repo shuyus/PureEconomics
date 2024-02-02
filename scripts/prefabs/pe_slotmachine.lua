@@ -1,5 +1,5 @@
 require "prefabutil"
-local treasure = require "PEslotmachinedata"
+local treasurehunt = require "PEslotmachinedata"
 
 local prefabs =
 {	
@@ -119,7 +119,7 @@ local actions =
 
 --Check treasurehunt
 do
-	--print("Check treasurehunt...")
+	--dprint("Check treasurehunt...")
 	local fail_prefab = {}
 	local function CheckLoot(arr)
 		if arr==nil then
@@ -127,7 +127,7 @@ do
 		end
 		for k,v in pairs(arr) do
 			if fail_prefab[k] == nil and not PrefabExists(k) then
-				print('UNKNOWN PREFAB:',k)
+				dprint('UNKNOWN PREFAB:',k)
 				fail_prefab[k] = true
 			end
 		end
@@ -138,11 +138,11 @@ do
 		CheckLoot(v.random_loot)
 	end
 	
-	--print("Check local arrays...")
+	--dprint("Check local arrays...")
 	local function CheckArr(arr)
 		for k,v in pairs(arr) do
 			if treasurehunt[k] == nil then
-				print("UNKNOWN KEY:",k)
+				dprint("UNKNOWN KEY:",k)
 			end
 		end
 	end
@@ -226,7 +226,7 @@ local function SpawnReward(inst, reward, lootdropper, pt, delay)
 				local item = SpawnPrefab(k)
 
 				if item == nil then
-					print("CAN't SPAWN PREFAB: ",k)
+					dprint("CAN't SPAWN PREFAB: ",k)
 				else
 					if item.components.inventoryitem and not item.components.health then
 						local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(2*math.cos(spawnangle), 3, 2*math.sin(spawnangle))
@@ -255,12 +255,12 @@ end
 local function PickPrize(inst,item_prefab,giver)
 	local anxiang= giver.userid
 	inst.busy = true
-	--print("item_prefab",tostring(item_prefab))
+	--dprint("item_prefab",tostring(item_prefab))
 	local prizevalue
 
 	if item_prefab == "oinc10_yuan" then
 		prizevalue = weighted_random_choice(prizevalues)
-		-- print("slotmachine prizevalue", prizevalue)
+		-- dprint("slotmachine prizevalue", prizevalue)
 		if prizevalue == "ok" then
 			inst.prize = weighted_random_choice(okspawns)
 		elseif prizevalue == "good" then
@@ -269,7 +269,7 @@ local function PickPrize(inst,item_prefab,giver)
 			inst.prize = weighted_random_choice(badspawns)
 		else
 			-- impossible!
-			-- print("impossible slot machine prizevalue!", prizevalue)
+			-- dprint("impossible slot machine prizevalue!", prizevalue)
 		end
 	elseif item_prefab== "oinc100_yuan" then   
 		prizevalue = "good"
@@ -278,7 +278,7 @@ local function PickPrize(inst,item_prefab,giver)
 		--prizevalue ="ok"
 		--inst.prize = weighted_random_choice(from_trinket_spawns)
 	end
-	--print("prizevalue",prizevalue)
+	--dprint("prizevalue",prizevalue)
 
 	inst.prizevalue = prizevalue
 
@@ -310,7 +310,7 @@ local function DoneSpinning(inst)
 		local offset, check_angle, deflected = FindWalkableOffset(pos, math.random()*2*PI, radius , 8, true, false) -- try to avoid walls
 		if offset then
 			if treasure then
-				-- print("Slot machine treasure "..tostring(treasure))
+				-- dprint("Slot machine treasure "..tostring(treasure))
 				-- SpawnTreasureLoot(treasure, inst.components.lootdropper, pos+offset)
 				-- SpawnPrefab("collapse_small").Transform:SetPosition((pos+offset):Get())
 				SpawnReward(inst, treasure)
@@ -320,9 +320,9 @@ local function DoneSpinning(inst)
 				SpawnCritter(inst, "trinket_"..tostring(math.random(NUM_TRINKETS)), inst.components.lootdropper, pos+offset)
 			elseif item == "nothing" then
 				-- do nothing
-				-- print("Slot machine says you lose.")
+				-- dprint("Slot machine says you lose.")
 			else
-				-- print("Slot machine item "..tostring(item))
+				-- dprint("Slot machine item "..tostring(item))
 				SpawnCritter(inst, item, inst.components.lootdropper, pos+offset)
 			end
 		end
@@ -361,7 +361,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
 end
 
 local function OnRefuseItem(inst, item)
-	-- print("Slot machine refuses "..tostring(item.prefab))
+	-- dprint("Slot machine refuses "..tostring(item.prefab))
 end
 
 local function OnLoad(inst,data)

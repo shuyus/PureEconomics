@@ -100,7 +100,7 @@ AddModRPCHandler("PureEconomics", "PEbuy", PEBuyFn)
 local function PEEdit(player, name, price, canbuy)
     if not player.Network:IsServerAdmin() then return end
     if canbuy == nil then canbuy =false end
-    print("===PEEdit",name, price, canbuy)
+    dprint("===PEEdit",name, price, canbuy)
     if name == nil or price == nil or not isnum(price) or price<0 or not isbool(canbuy) then return end
 
     local info = {
@@ -116,7 +116,7 @@ AddModRPCHandler("PureEconomics", "PEedit", PEEdit)
 
 
 local function PErecovery(player, name)
-    print("PErecovery",player,name,player.Network:IsServerAdmin())
+    dprint("PErecovery",player,name,player.Network:IsServerAdmin())
     if not player.Network:IsServerAdmin() then return end
     pe_item_data:ClearItemChange(name)
 end

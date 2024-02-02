@@ -28,8 +28,8 @@ end
 
 local pe_upvaluehelper = require("3rd/PEupvaluehelper")
 local PEItemData = require("PEitemdata") --核心组件，包含所有商品信息，计算合成品价格
-local item_data = PEItemData()
-local pe_context = {} --放置小函数
+item_data = PEItemData()
+pe_context = {} --放置小函数
 
 GLOBAL.pe_context = pe_context
 GLOBAL.pe_upvaluehelper = pe_upvaluehelper
