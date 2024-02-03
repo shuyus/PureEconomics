@@ -1,7 +1,10 @@
+
+G.PE_DEBUG = true
+
 if PE_DEBUG then
-	GLOBAL.dprint = function(...)
+	G.dprint = function(...)
 		print(...)
 	end
 else
-	GLOBAL.dprint = function(...)end
+	G.dprint = function(...)end
 end

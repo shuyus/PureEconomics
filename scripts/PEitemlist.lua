@@ -291,7 +291,6 @@ PE_GOODS_LIST.decoration = {
 	{name = "turf_beard_rug", price = nil},--胡须地毯
 
 
-
 }
 
 PE_GOODS_LIST.smithing = 
@@ -502,16 +501,16 @@ PE_GOODS_LIST.precious =
 {
 	--{name = "blueprint", price = 250},--蓝图
 	--常规可食用的
-	{name = "batnosehat", price = 2400},--牛奶帽
-	{name = "goatmilk", price = 1200},--电羊奶
-	{name = "butter", price = 1600},--蝴蝶黄油
-	{name = "mandrake", price = 2500},--曼德拉草
+	{name = "batnosehat", price = 800},--牛奶帽
+	{name = "goatmilk", price = 1000},--电羊奶
+	{name = "butter", price = 800},--蝴蝶黄油
+	{name = "mandrake", price = 2400},--曼德拉草
 	--巨鹿相关
-	{name = "deerclops_eyeball", price = 3600},--眼球
+	{name = "deerclops_eyeball", price = 2400},--眼球
 	{name = "eyebrellahat", price = nil},--眼球伞
 	--克劳斯相关
-	{name = "deer_antler3", price = 250},--鹿角钥匙
-	{name = "klaussackkey", price = 1800},--真钥匙
+	{name = "deer_antler3", price = 240},--鹿角钥匙
+	{name = "klaussackkey", price = 2000},--真钥匙
 	--麋鹿鹅相关
 	{name = "goose_feather", price = 200},--鹅毛
 	--熊大相关
@@ -529,31 +528,25 @@ PE_GOODS_LIST.precious =
 	--蚁狮
 	{name = "townportaltalisman", price = 300},--沙之石	
 	--影织者
-	{name = "fossil_piece", price = 600},--化石碎片
+	{name = "fossil_piece", price = 400},--化石碎片
 	{name = "armorskeleton", price = 4000},--骨甲
 	{name = "skeletonhat", price = 3200},--骨盔
 	{name = "thurible", price = 2400},--暗影香炉	
 	--{name = "atrium_key", price = 1200},--远古钥匙
-	{name = "shadowheart", price = 1600},--暗影之心
+	{name = "shadowheart", price = 800},--暗影之心
 	--毒菌蟾蜍相关
 	{name = "sleepbomb", price = nil},--催眠袋
 	{name = "red_mushroomhat", price = nil},--红菇帽
 	{name = "green_mushroomhat", price = nil},--绿菇帽
 	{name = "blue_mushroomhat", price = nil},--蓝菇帽
 	{name = "shroom_skin", price = 1600},--蛤蟆皮
-	--三基佬相关
-	{name = "trinket_15", price = 270},--白主教
-	{name = "trinket_16", price = 270},--黑主教
-	{name = "trinket_28", price = 270},--白战车
-	{name = "trinket_29", price = 270},--黑战车
-	{name = "trinket_30", price = 270},--白骑士
-	{name = "trinket_31", price = 270},--黑骑士
+
 	--天体相关
 	{name = "purebrilliance", price = 300},-- 纯粹辉煌
 	{name = "moonstorm_spark", price = 200},--月熠
-	{name = "moonglass_charged", price = 220},--灌注月亮碎片
+	{name = "moonglass_charged", price = 220, canbuy = false},--灌注月亮碎片
 	{name = "moonstorm_static_item", price = 2000},--约束静电
-	{name = "moonrockseed", price = 2000},--天体宝球
+	--{name = "moonrockseed", price = 2000},--天体宝球
 	{name = "alterguardianhat", price = 8000},--启迪之冠
 	{name = "alterguardianhatshard", price = 1000},--启迪之冠碎片
 	--远古相关
@@ -566,8 +559,8 @@ PE_GOODS_LIST.precious =
 	{name = "yellowstaff", price = nil},--黄法杖
 	{name = "gears", price = 400},--齿轮
 	{name = "minotaurhorn", price = 2500},--犀牛角
-	{name = "thulecite_pieces", price = 30},--铥矿碎片
-	{name = "thulecite", price = nil},--铥矿
+	{name = "thulecite_pieces", price = 30, canbuy = false},--铥矿碎片
+	{name = "thulecite", price = nil, canbuy = false},--铥矿
 	{name = "armorruins", price = nil},--铥矿甲
 	{name = "ruins_bat", price = nil},--铥矿棒
 	{name = "ruinshat", price = nil},--铥矿头盔
@@ -575,13 +568,13 @@ PE_GOODS_LIST.precious =
 	{name = "orangeamulet", price = nil},--懒人护符
 	{name = "yellowamulet", price = nil},--魔光护符
 	--暗影系列（2023.6.30）
-	{name = "voidcloth", price = 400},--暗影碎布
+	{name = "voidcloth", price = 400, canbuy = false},--暗影碎布
 	{name = "voidcloth_scythe", price = nil},--暗影收割者
 	{name = "voidcloth_umbrella", price = nil},--暗影伞
 	{name = "voidclothhat", price = nil},--虚空风帽
 	{name = "armor_voidcloth", price = nil},--虚空长袍
 	--亮茄系列（2023.6.30）
-	{name = "lunarplant_husk", price = 200},--亮茄壳
+	{name = "lunarplant_husk", price = 200, canbuy = false},--亮茄壳
 	{name = "bomb_lunarplant", price = nil},--亮茄炸弹.1
 	{name = "staff_lunarplant", price = nil},--亮茄魔杖
 	{name = "sword_lunarplant", price = nil},--亮茄剑
@@ -602,12 +595,12 @@ PE_GOODS_LIST.precious =
 	{name = "moonbutterfly", price = 300},--月蛾
 	{name = "moonglass", price = 200},--月亮碎片
 	--疯猪
-	{name = "horrorfuel", price = 1000},--纯粹恐惧
-	{name = "dreadstone", price = 300},--绝望石
+	{name = "horrorfuel", price = 1000, canbuy = false},--纯粹恐惧
+	{name = "dreadstone", price = 300, canbuy = false},--绝望石
 	{name = "armordreadstone", price = nil},--绝望石甲
 	{name = "dreadstonehat", price = nil},--绝望石盔
 	--水中木
-	{name = "oceantreenut", price = 8000},--疙瘩树果
+	{name = "oceantreenut", price = 9999},--疙瘩树果
 	--坎普斯
 	{name = "krampus_sack", price = 9999},--小偷包
 	--钢羊
@@ -636,6 +629,14 @@ PE_GOODS_LIST.precious =
 	{name = "saddle_race", price = nil},--蝴蝶鞍
 	{name = "saddle_war", price = nil},--战斗鞍
 	{name = "deserthat", price = nil},--风镜
+
+	--三基佬相关
+	{name = "trinket_15", price = 200, canbuy = false},--白主教
+	{name = "trinket_16", price = 200, canbuy = false},--黑主教
+	{name = "trinket_28", price = 200, canbuy = false},--白战车
+	{name = "trinket_29", price = 200, canbuy = false},--黑战车
+	{name = "trinket_30", price = 200, canbuy = false},--白骑士
+	{name = "trinket_31", price = 200, canbuy = false},--黑骑士
 }
 
 PE_GOODS_LIST.special = 

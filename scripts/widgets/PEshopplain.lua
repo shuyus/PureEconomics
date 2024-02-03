@@ -149,8 +149,8 @@ local PEShopPlain = Class(Widget, function(self, owner)
     self.owner = owner
     self.root = self:AddChild(Widget("root"))
 
-    local backdrop = self.root:AddChild(Image("images/quagmire_recipebook.xml", "quagmire_recipe_menu_bg.tex"))
-    backdrop:ScaleToSize(945, 577.5)
+    self.backdrop = self.root:AddChild(Image("images/quagmire_recipebook.xml", "quagmire_recipe_menu_bg.tex"))
+    self.backdrop:ScaleToSize(945, 577.5)
 
 	self.current_mode = TUNING.PUREECOMOMICS.USER_MODE
 	self.level_manager = self.root:AddChild(GridLevelManager())
@@ -158,8 +158,11 @@ local PEShopPlain = Class(Widget, function(self, owner)
 	-- self.level_manager:SetDisplayFilterFn(function(cell_widget)
 	-- 	return self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE or cell_widget.back.canbuy
 	-- end)
-
+	
+	self.isinit = true
     self.tabs = {}
+	self:_MakeButton()
+	self:_MakeInfo()
 	self:SwitchMode(TUNING.PUREECOMOMICS.USER_MODE)
 
 	if TheNet:GetIsServerAdmin() then
@@ -192,10 +195,6 @@ local PEShopPlain = Class(Widget, function(self, owner)
 		edit_plain:MoveToBack()
 	end
 
-
-	self:_MakeButton()
-	self:_MakeInfo()
-	
 end)
 
 function PEShopPlain:UpdateCash()
@@ -265,7 +264,7 @@ function PEShopPlain:_MakeButton()
     self.level_manager:SetLastNextButton(last_page_button, next_page_button)
 end
 
-function PEShopPlain:_MakeTab(name, index)
+function PEShopPlain:_MakeSingleTab(name, index)
 	local tab = ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex", nil, nil, nil, "quagmire_recipe_tab_active.tex")
 	tab.filter = name
 	tab:SetFocusScale(.5, .7)
@@ -291,7 +290,30 @@ function PEShopPlain:_MakeTab(name, index)
 end
 
 
-function PEShopPlain:_AddLevel(filter)
+function PEShopPlain:_MakeTabs()
+
+	-- if #self.tabs ~= 0 then
+	-- 	for i = #self.tabs, 1, -1 do
+	-- 		local tab = self.tabs[i]
+	-- 		if tab then
+	-- 			table.remove(self.tabs,i)
+	-- 			tab:Kill()
+	-- 		end
+	-- 	end
+	-- end
+	
+	local _index = 1
+	for i,t in pairs(arr_filter) do
+		local filter = t.id
+		if not item_data.special_filters[filter] then
+			table.insert(self.tabs, self.root:AddChild(self:_MakeSingleTab(filter,_index)))
+			_index = _index + 1
+		end
+	end
+end
+
+
+function PEShopPlain:_AddSingleLevel(filter)
     local all_cells = {}
 	local isedit = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE
 
@@ -306,25 +328,11 @@ function PEShopPlain:_AddLevel(filter)
 
 end
 
-
-function PEShopPlain:_MakeTabLevel()
-	local _index = 1
-	if #self.tabs ~= 0 then
-		for i = #self.tabs, 1, -1 do
-			local tab = self.tabs[i]
-			if tab then
-				table.remove(self.tabs,i)
-				tab:Kill()
-			end
-		end
-	end
-
+function PEShopPlain:_AddLevels()
 	for i,t in pairs(arr_filter) do
 		local filter = t.id
 		if not item_data.special_filters[filter] then
-			table.insert(self.tabs, self.root:AddChild(self:_MakeTab(filter,_index)))
-			self:_AddLevel(filter)
-			_index = _index + 1
+			self:_AddSingleLevel(filter)
 		end
 	end
 end
@@ -332,22 +340,30 @@ end
 
 function PEShopPlain:SwitchMode(mode)
 	self.level_manager:ClearAllLevels()
+
 	if mode == nil then
 		self.current_mode = self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE and 
 							TUNING.PUREECOMOMICS.USER_MODE or TUNING.PUREECOMOMICS.ADMIN_MODE
 	else
 		self.current_mode = mode
 	end
-	self:_MakeTabLevel()
-	self.last_selected = self.tabs[1]
-	self.last_selected:Select()
-	self.last_selected:MoveToFront()
 
-	self:_PositionTabs(130, 310)
+	if self.isinit then
+		self:_MakeTabs()
+		self:_PositionTabs(130, 310)
+		self.last_selected = self.tabs[1]
+		self.isinit = false
+	end
+	
+	self:_AddLevels()
 	self.level_manager:AdjustLevelPosition(-400, 200)
 	self.level_manager:ChooseLevel(self.last_selected.filter)
 
 	self:_MakeSpecial()
+
+	self.last_selected:Select()
+	self.last_selected:MoveToFront()
+
 end
 
 

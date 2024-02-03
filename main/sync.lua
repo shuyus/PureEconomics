@@ -8,16 +8,80 @@
 -- DataDumper(fastmode)在万次测试下的效率是json.encode的2倍
 -- RunInSandbox在万次测试下的效率是json.decode的13.75倍
 
+
+if IsServer then
+	local function PEShardSyncAll(id, dumpdata)
+		dprint("===shard all sync",id,dumpdata)
+		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
+			
+			local success, info_list = RunInSandbox(dumpdata)
+			if success and string.len(dumpdata) > 0 then
+				pe_item_data:SetItemInfoWithList(info_list,false)
+			end
+		end
+	end
+	
+	local function PEShardSimpleSync(id, name, price, canbuy)
+		dprint("Shard simple Sync",id,name,price,canbuy)
+		if price and id~=tonumber(TheShard:GetShardId()) then
+			if canbuy == nil then canbuy =false end
+			pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy},false)
+		end
+	end
+	
+	
+	local function PEShardSync(id, dumpdata)
+		dprint("===shard sync",id,dumpdata)
+		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
+			local success, info = RunInSandbox(dumpdata)
+			if success and string.len(dumpdata) > 0 then
+				pe_item_data:SetItemInfo(info,false)
+			end
+		end
+	end
+
+	local function PEShardCanSellSync(id, name, cansell)
+		if cansell == nil then cansell = false end --false通过RPC发过来会变成nil
+		dprint("===shard can sell sync",id,name)
+		pe_item_data:SetItemCanSell(name,cansell)
+	end
+
+	local function PEShardCanSellListSync(id, dumpdata)
+		dprint("===shard can sell List sync",id,dumpdata)
+		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
+			local success, cant_sell_items = RunInSandbox(dumpdata)
+			if success and string.len(dumpdata) > 0 then
+				for name,cansell in pairs(cant_sell_items) do
+					pe_item_data:SetItemCanSell(name,cansell)
+				end
+			end
+		end
+	end
+
+	AddShardModRPCHandler("PureEconomics", "PEshardsyncall", PEShardSyncAll) 
+	AddShardModRPCHandler("PureEconomics", "PEshardsimplesync", PEShardSimpleSync) 
+	AddShardModRPCHandler("PureEconomics", "PEshardsync", PEShardSync) 
+	AddShardModRPCHandler("PureEconomics", "PEshardcansellsync", PEShardCanSellSync)
+	AddShardModRPCHandler("PureEconomics", "PEshardcansellsync", PEShardCanSellListSync) 
+end
+
+if TheNet:IsDedicated() then
+	local __blank = function()end
+    AddClientModRPCHandler("PureEconomics", "PEclientsyncall", __blank) 
+	AddClientModRPCHandler("PureEconomics", "PEclientsimplesync", __blank) 
+	AddClientModRPCHandler("PureEconomics", "PEclientsync", __blank) 
+	AddClientModRPCHandler("PureEconomics", "PEclientprecioussync",__blank) 
+
+	return 
+end
+
 local function PEClientSyncAll(dumpdata)
 	dprint("ClientSyncAll",dumpdata)
 	if TheNet:GetIsServer() then return end  --不开洞的房主自己就是服务端，不需要执行
 	local success, info_list = RunInSandbox(dumpdata)
 	dprint(success,info_list)
 	if success and string.len(dumpdata) > 0 then
-		
-		for name,info in pairs(info_list) do
-			pe_item_data:SetItemInfo(info)
-		end
+		pe_item_data:SetItemInfoWithList(info_list)
 	end
 end
 
@@ -43,47 +107,23 @@ end
 
 local function PEClientPreciousSync(dumpdata)
 	dprint("Client Precious Sync",dumpdata)
-	if TheNet:GetIsServer() then return end
+	if PE_DEBUG then
+		assert(ThePlayer,"ThePlayer is nil")
+	end
+
+	if TheNet:GetIsServer() or not ThePlayer then return end
+	if PE_DEBUG then 
+		assert(ThePlayer, "ThePlayer is nil")
+	end
+
 	local success, array = RunInSandbox(dumpdata)
 	dprint(success,array)
 	if success and string.len(dumpdata) > 0 then
-		ThePlayer.replica.peplayercontext:SetPreciousArray(array) --TODO ThePlayer is nil
-	end
-end
-
-local function PEShardSyncAll(id, dumpdata)
-	dprint("===shard all sync",id,dumpdata)
-	if dumpdata and id~=tonumber(TheShard:GetShardId()) then
-		
-		local success, info_list = RunInSandbox(dumpdata)
-		if success and string.len(dumpdata) > 0 then
-			for name,info in pairs(info_list) do
-				pe_item_data:SetItemInfo(info,false)
-			end
-
-			--TheWorld.components.peworldcontext:SyncListToClient()
-		end
-	end
-end
-
-local function PEShardSimpleSync(id, name, price, canbuy)
-	dprint("Shard simple Sync",id,name,price,canbuy)
-	if price and id~=tonumber(TheShard:GetShardId()) then
-		if canbuy == nil then canbuy =false end
-		pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy},false)
+		ThePlayer.replica.peplayercontext:SetPreciousArray(array) --TODO ThePlayer可能是nil
 	end
 end
 
 
-local function PEShardSync(id, dumpdata)
-	dprint("===shard sync",id,dumpdata)
-	if dumpdata and id~=tonumber(TheShard:GetShardId()) then
-		local success, info = RunInSandbox(dumpdata)
-		if success and string.len(dumpdata) > 0 then
-			pe_item_data:SetItemInfo(info,false)
-		end
-	end
-end
 
 AddClientModRPCHandler("PureEconomics", "PEclientsyncall", PEClientSyncAll) 
 AddClientModRPCHandler("PureEconomics", "PEclientsimplesync", PEClientSimpleSync) 
@@ -91,9 +131,7 @@ AddClientModRPCHandler("PureEconomics", "PEclientsync", PEClientSync)
 
 AddClientModRPCHandler("PureEconomics", "PEclientprecioussync", PEClientPreciousSync) 
 
-AddShardModRPCHandler("PureEconomics", "PEshardsyncall", PEShardSyncAll) 
-AddShardModRPCHandler("PureEconomics", "PEshardsimplesync", PEShardSimpleSync) 
-AddShardModRPCHandler("PureEconomics", "PEshardsync", PEShardSync) 
+
 
 
 

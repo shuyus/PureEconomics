@@ -12,7 +12,9 @@ local PEItemData = Class(function(self)
     self.special_filters = {} -- 特殊分类，不参与主面板的购买
     self.filter_num = 0 -- 面板显示的分类数量，不包括特殊分类
     self.noprice = {} -- 价格全部计算完成后仍然无价格物品列表，正常情况下CaculatePrice完成后该列表和TAB_UNPRICED都为空
-    self.cannotbuy = {} -- 有价格但不能买的物品列表
+    self.cannotbuy = {} -- 有价格但不能买的物品列表，键为名称，值为
+    self.wait_to_commit = {}
+    self.cantsell = {} --不能售出的物品列表,键为名称，值为false代表不可售出
     self:Init()
 end)
 
@@ -127,7 +129,17 @@ function PEItemData:AddFilter(name, isspecial)
     end
 end
 
-function PEItemData:AddItem(name, filter, price, canbuy)
+function PEItemData:AddItem(info, filter, price, canbuy)
+    local name = info
+    if istbl(name) then
+        name = info.name
+        filter = info.filter
+        price = info.price
+        canbuy = info.canbuy
+    end
+
+    if not isstr(name) or not isnum(price) or not isstr(filter) then return false end
+
     if canbuy == nil then
         canbuy = true
     end
@@ -154,6 +166,7 @@ function PEItemData:AddItem(name, filter, price, canbuy)
         self.noprice[name] = nil
     end
 
+    return true
 end
 
 function PEItemData:ChangeCanBuy(name)
@@ -184,7 +197,10 @@ end
 function PEItemData:SetItemInfoWithoutSync(info)
     local name = info.name
 
-    if TAB_ALL[name] then
+    if not TAB_ALL[name] then --增加物品
+        local res = self:AddItem(info)
+        if not res then return false end
+    else --修改物品
         if TheNet:GetIsServer() and not info.origin then
             local origin = TAB_ALL[name].origin or deepcopy(TAB_ALL[name]) --只保留最第一次的修改信息
             info.origin = origin
@@ -195,38 +211,67 @@ function PEItemData:SetItemInfoWithoutSync(info)
         if info.canbuy and info.canbuy ~= TAB_ALL[name].canbuy then
             self:ChangeCanBuy(name)
         end
-
+    
         for k, v in pairs(info) do
             TAB_ALL[name][k] = v  --只修改info里有的项目
         end
-        
-        return true
     end
 
-    return false
+    return true
 end
 
 --服务端调用此方法会触发到客户端和其它世界的同步
 function PEItemData:SetItemInfo(info,shard_sync)
     local name = info.name
-    if not TAB_ALL[name] then
-        return false
-    end
+    local res = self:SetItemInfoWithoutSync(info)
 
-    if self:SetItemInfoWithoutSync(info) and TheNet:GetIsServer() then
+    if res and TheNet:GetIsServer() then
         if shard_sync==nil then shard_sync = true end
         local _info = deepcopy(TAB_ALL[name])
-        TheWorld.components.peworldcontext:AddChanged(_info,shard_sync)
-        return true
+        if TheWorld then
+            TheWorld.components.peworldcontext:AddChanged(_info,shard_sync)
+        else 
+            dprint("PEItemData:SetItemInfo no TheWorld")
+            self.wait_to_commit[_info.name] = _info
+        end
     end
 
-    return false
+    return res
+end
+
+-- 返回值为设置失败的物品数目
+function PEItemData:SetItemInfoWithList(infos,shard_sync)
+    local res = 0
+    for k,info in pairs(infos) do
+        local name = info.name
+        if not self:SetItemInfoWithoutSync(info) then
+            res = res + 1
+        end
+    end
+
+    if TheNet:GetIsServer() then
+        if shard_sync==nil then shard_sync = true end
+        local _infos = deepcopy(infos)
+        if TheWorld then
+            TheWorld.components.peworldcontext:AddChangedWithList(_infos,shard_sync)
+        else
+            dprint("PEItemData:SetItemInfoWithList no TheWorld") --丢掉也可以吧......
+            for k,v in pairs(_infos) do
+                self.wait_to_commit[v.name] = v
+            end
+        end
+        return res
+    end
+
+    return res
 end
 
 
 
 function PEItemData:ClearItemChange(name)
+    dprint("PEItemData:ClearItemChange",name)
     if not TAB_ALL[name] or not TAB_ALL[name].origin then
+        dprint("no origin",name)
         return false
     end
     local obj = TAB_ALL[name]
@@ -307,6 +352,27 @@ function PEItemData:RemoveItem(name)
         self.filters[filter] = nil
         self.filter_num = self.filter_num - 1
     end
+end
+
+function PEItemData:GetWaitList()
+    return self.wait_to_commit
+end
+
+function PEItemData:ResetWaitList()
+    self.wait_to_commit = {}
+    return true
+end
+
+function PEItemData:SetItemCanSell(name, cansell)
+    self.cantsell[name] = not cansell
+end
+
+function PEItemData:IsItemCanSell(name)
+    return not self.cantsell[name]
+end
+
+function PEItemData:GetCanSellList()
+    return deepcopy(self.cantsell)
 end
 
 function PEItemData:DebugPrint()

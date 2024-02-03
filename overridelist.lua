@@ -1,39 +1,75 @@
 --[[
 注意：游戏内改动的优先级大于本文件
 
-如果你对代码一窍不通，你只需要修改两条绿色虚线之间的代码即可，其它的不要动
+如果你对代码一窍不通，你只需要修改两条虚线之间的代码即可，其它的不要动
+下方的所有示例都不会被实际应用到游戏中
+]]
 
-添加示例如下：将下面一行代码复制到虚线区域，你就可以将肉串的价格修改为1000，并且可以在商店购买
-{name = "kabobs", price = 1000, canbuy = true},
+--[[
+override_list 负责已经存在商品的信息修改
+添加示例如下：将下面一行代码复制到虚线区域，你就可以将肉串的价格修改为1000，并且禁止在商店购买
+{name = "kabobs", price = 1000, canbuy = false},
 如果你不知道你要修改的物品name，请去scripts文件加下找到PEitemlist.lua文件，里面有物品名称注释
 如果你不想让某样东西在商店购买，可以添加如下行所示的代码，这行代码让肉串不可以在商店购买
 {name = "kabobs",  canbuy = false},
-
+单独调整价格也可以
+{name = "kabobs", price = 1000},
 ]]
-
 local override_list = {
 
+    --请在下方虚线内按行添加，注意符号使用半角符号，注意结尾的逗号不要遗漏
+    -------------------------------------------------
+    {name = "bonestew", price = 1000, canbuy = false},
+    -------------------------------------------------
+}
+
+--[[
+add_items 负责添加新物品到商店，支持模组物品
+]]
+local add_items = {
+
+    --下一行是一个示例，它添加了晓美焰的怀表，价格为1000，可以在商店购买，分区为战斗
+    {name = "homura_clock", price = 1000, canbuy = true, filter = "fight"},  
+    --请在下方虚线内按行添加，不要把开头的两个减号也复制了，注意符号使用半角符号，注意结尾的逗号不要遗漏
     -------------------------------------------------
     
     -------------------------------------------------
 }
 
 
-local add_list = {
-
+--[[
+can_not_sell 负责添加无法售卖的物品，将name加入下表即可禁止其出售
+]]
+local can_not_sell = {
+    --下一行是一个示例，它禁止了肉串和肉丸的售卖
+    "kabobs","meatballs",
+    --请在下方虚线内添加name，用双引号包围并以逗号隔开，不要把开头的两个减号也复制了，注意符号使用半角符号，注意结尾的逗号不要遗漏
     -------------------------------------------------
     
     -------------------------------------------------
 }
 
-local add_filter = {
+------------------------------------------------------------------------------------
+--  下面的所有代码请勿修改
+------------------------------------------------------------------------------------
+local add_filters = {
 
+    --{name = "newfilter", zh ="新分类名",en = "New Type Name"}, 
     ------------------------------------------------
-    --{name = "newfilter", zh ="新分类名",en = "New Type Name"},
+    
     -------------------------------------------------
 }
 
-GLOBAL.pe_context.overrides = override_list
-GLOBAL.pe_context.addlist = add_list
+GLOBAL.pe_context.this = {
+
+}
+
+GLOBAL.pe_context.this.overrides = override_list
+GLOBAL.pe_context.this.additems = add_items
+GLOBAL.pe_context.this.addfilter = add_filters
+GLOBAL.pe_context.this.cantsell = can_not_sell
+
 override_list = nil
-add_list = nil
+add_items = nil
+add_filters = nil
+can_not_sell= nil

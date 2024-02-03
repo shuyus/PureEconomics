@@ -34,11 +34,11 @@ end
 
 if not TUNING.PUREECOMOMICS.DISABLE_SLOTMACHINE then
     AddRecipe2(
-        "slotmachine", {
+        "pe_slotmachine", {
             Ingredient("boards", 5)}, 
             TECH.SCIENCE_ONE, {
             atlas = "images/shop_pedestal.xml", image = "shop_pedestal.tex",
-            placer = "slotmachine_placer"
+            placer = "pe_slotmachine_placer"
         }, {"STRUCTURES" }
     )
 end
