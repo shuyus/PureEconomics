@@ -81,7 +81,7 @@ local PEEdit = Class(Widget, function(self)
     self.recovery:SetPosition(100, -100, 0)
     self.recovery:SetText(STRINGS.PUREECOMOMICS.RECOVERY_BUTTON)
     self.recovery:SetNormalScale(cell_size / base_size * 1.3, cell_size / base_size * 1.3)
-    self.recovery:SetTextSize(30)
+    self.recovery:SetTextSize(25)
     self.recovery:SetOnClick(function()
         SendModRPCToServer(GetModRPC("PureEconomics", "PErecovery"), self.item_name)
         if self.submit_callback then

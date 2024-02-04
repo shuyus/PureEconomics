@@ -37,7 +37,7 @@ if not TUNING.PUREECOMOMICS.DISABLE_SLOTMACHINE then
         "pe_slotmachine", {
             Ingredient("boards", 5)}, 
             TECH.SCIENCE_ONE, {
-            atlas = "images/shop_pedestal.xml", image = "shop_pedestal.tex",
+            atlas = "images/slot_machine.xml", image = "slot_machine.tex",
             placer = "pe_slotmachine_placer"
         }, {"STRUCTURES" }
     )

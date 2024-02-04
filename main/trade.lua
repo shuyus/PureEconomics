@@ -15,35 +15,12 @@ GLOBAL.pe_context.remove_worly_suffix = remove_worly_suffix
 GLOBAL.pe_context.iscoin = iscoin
 
 if IsServer then
-
-    -- 无视设置，绝对不可卖的物品列表
-    local cannot_sell_items = {
-        "chester_eyebone", --眼骨
-        "glommerflower", --格罗姆花
-        "hutch_fishbowl", --星空(哈奇鱼缸)
-        "lucy",--露西斧(谁会卖老婆啊)
-        "abigail_flower",--阿比盖尔花
-        "atrium_key",--远古钥匙
-        "messagebottle",--瓶中信
-        "shadowheart",--暗影之心
-        "moonrockseed",--天体宝球
-        "terrarium",--盒中泰拉
-    }
-
-    for k,v in pairs(GLOBAL.pe_context.cantsell) do
-        if isstr(v) and not table.contains(cannot_sell_items,v) then
-            table.insert(cannot_sell_items,v)
-        end
-    end
-
-    for i,name in pairs(cannot_sell_items) do
-        item_data:SetItemCanSell(name,false)
-    end
-
     local function cansell(inst)
+        local str = remove_worly_suffix(inst.prefab)
         if  not inst:HasTag("nonpotatable") and 
-            not inst:HasTag("irreplaceable") and 
-            item_data:IsItemCanSell(remove_worly_suffix(inst.prefab)) then
+            not inst:HasTag("irreplaceable") and
+            item_data:IsItemCanSell(str) and -- 用户自定义
+            not table.contains(GLOBAL.pe_context.absoulte_cant_sell,str) then --绝对不可卖
             return true
         end
 

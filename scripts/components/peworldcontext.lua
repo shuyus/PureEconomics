@@ -19,16 +19,16 @@ end
 
 local PEWorldContext = Class(function(self, world)
     self.inst = world
-    self.server_changed = {}  -- overridelist修改
+    self.file_changed = {}  -- overridelist修改
     self.game_changed = {} -- 储存游戏内物品修改信息的列表
     self.changed = {} -- 上面两个表的合并，game_changed会覆盖同样的设置
     self.inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
     self:AddChangedWithList(item_data:GetWaitList(),false)
     item_data:ResetWaitList()
 
-    if TheNet:GetServerIsClientHosted() or TheShard:IsMaster() then
+    if not TheNet:IsDedicated() or TheShard:IsMaster() then
         self:MasterInit()
-        self.inst:DoTaskInTime(.1,function()
+        self.inst:DoTaskInTime(.1,function()--TODO 这里的逻辑可能会在重置世界时向所有世界发送两遍RPC
             self:SyncListToClient(self.changed)
             self:SyncListToShard(self.changed)
             self:SyncCanSellListToShard()
@@ -41,14 +41,14 @@ function PEWorldContext:MasterInit()
     for k,v in pairs(add_list) do
         item_data:SetItemInfoWithoutSync(v)
         local info = item_data:GetItemInfo(v.name)
-        self.server_changed[v.name] = info
+        self.file_changed[v.name] = info
         self.changed[v.name] = info
     end
 
     for k, v in pairs(override_list) do
         item_data:SetItemInfoWithoutSync(v)
         local info = item_data:GetItemInfo(v.name)
-        self.server_changed[v.name] = info
+        self.file_changed[v.name] = info
         self.changed[v.name] = info
     end
 end
@@ -85,7 +85,7 @@ function PEWorldContext:RemoveChanged(name,shard_sync)
         if shard_sync then
             self:SyncToShard(name)
         end
-        self.server_changed[name] = nil
+        self.file_changed[name] = nil
         self.game_changed[name] = nil
         self.changed[name] = nil
     end
@@ -142,15 +142,15 @@ end
 
 function PEWorldContext:OnSave()
     local data = {}
-    if TheNet:GetServerIsClientHosted() or TheShard:IsMaster() then
+    if not TheNet:IsDedicated() or TheShard:IsMaster() then
         data.game_changed = self.game_changed
     end
     return data
 end
 
 function PEWorldContext:OnLoad(data)
-    if TheNet:GetServerIsClientHosted() or TheShard:IsMaster() then
-        for k,v in pairs(self.server_changed) do
+    if not TheNet:IsDedicated() or TheShard:IsMaster() then
+        for k,v in pairs(self.file_changed) do
             self.changed[v.name] = v
         end
 

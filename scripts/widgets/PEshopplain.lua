@@ -17,6 +17,9 @@ local GetImage = require "3rd/PEgetimage"
 
 local SINGLE_PAGE_NUM = 22
 
+local back_width = 945
+local back_height = 577.5
+local single_tab_width = math.floor(back_width*0.9/#arr_filter)
 local base_size = 128
 local cell_size = 73
 local icon_size = 20 / (cell_size/base_size)
@@ -150,7 +153,7 @@ local PEShopPlain = Class(Widget, function(self, owner)
     self.root = self:AddChild(Widget("root"))
 
     self.backdrop = self.root:AddChild(Image("images/quagmire_recipebook.xml", "quagmire_recipe_menu_bg.tex"))
-    self.backdrop:ScaleToSize(945, 577.5)
+    self.backdrop:ScaleToSize(back_width, back_height)
 
 	self.current_mode = TUNING.PUREECOMOMICS.USER_MODE
 	self.level_manager = self.root:AddChild(GridLevelManager())
@@ -172,7 +175,7 @@ local PEShopPlain = Class(Widget, function(self, owner)
 		edit_button:SetText(STRINGS.PUREECOMOMICS.EDIT_BUTTON)
 		edit_button:SetPosition(-400,250,0)
 		edit_button:SetNormalScale(cell_size/base_size*1.3, cell_size/base_size*1.3)
-		edit_button:SetTextSize(30)
+		edit_button:SetTextSize(25)
 		edit_button:SetOnClick(function()
 			self:SwitchMode()
 			if self.current_mode == TUNING.PUREECOMOMICS.ADMIN_MODE then 
@@ -235,7 +238,7 @@ end
 function PEShopPlain:_MakeInfo()
 	self.info = self.root:AddChild(Widget("info"))
 	self.info.textcolour = {0,0,0,1}
-	self.info.pre = self.info:AddChild(Text(NEWFONT,40,"余额"))
+	self.info.pre = self.info:AddChild(Text(NEWFONT,40,STRINGS.PUREECOMOMICS.REAMIN_INFO))
 	self.info.cash_num = self.info:AddChild(Text(NEWFONT,40,ThePlayer.replica.peplayercontext:GetCash()))
 
 	self.info.pre:SetColour(self.info.textcolour)
@@ -252,11 +255,11 @@ function PEShopPlain:_MakeButton()
     self.root.last_page_button = self:AddChild(last_page_button)
     self.root.next_page_button = self:AddChild(next_page_button)
 
-	last_page_button:SetText("上一页")
+	last_page_button:SetText(STRINGS.PUREECOMOMICS.LAST_BUTTON)
 	last_page_button:SetPosition(-80,-130,0)
 	last_page_button:SetNormalScale(cell_size/base_size*1.3, cell_size/base_size*1.3)
 	last_page_button:SetTextSize(30)
-	next_page_button:SetText("下一页")
+	next_page_button:SetText(STRINGS.PUREECOMOMICS.NEXT_BUTTON)
     next_page_button:SetPosition(0,-130,0)
     next_page_button:SetNormalScale(cell_size/base_size*1.3, cell_size/base_size*1.3)
     next_page_button:SetTextSize(30)
@@ -267,8 +270,9 @@ end
 function PEShopPlain:_MakeSingleTab(name, index)
 	local tab = ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex", nil, nil, nil, "quagmire_recipe_tab_active.tex")
 	tab.filter = name
-	tab:SetFocusScale(.5, .7)
-	tab:SetNormalScale(.5, .7)
+	local w,h = tab:GetSize()
+	tab:SetFocusScale(single_tab_width/w, .7)
+	tab:SetNormalScale(single_tab_width/w, .7)
 	tab:SetText(STRINGS.PUREECOMOMICS.FILTERS[name])
 	tab:SetTextSize(22)
 	tab:SetFont(HEADERFONT)
@@ -291,17 +295,6 @@ end
 
 
 function PEShopPlain:_MakeTabs()
-
-	-- if #self.tabs ~= 0 then
-	-- 	for i = #self.tabs, 1, -1 do
-	-- 		local tab = self.tabs[i]
-	-- 		if tab then
-	-- 			table.remove(self.tabs,i)
-	-- 			tab:Kill()
-	-- 		end
-	-- 	end
-	-- end
-	
 	local _index = 1
 	for i,t in pairs(arr_filter) do
 		local filter = t.id
@@ -350,7 +343,8 @@ function PEShopPlain:SwitchMode(mode)
 
 	if self.isinit then
 		self:_MakeTabs()
-		self:_PositionTabs(130, 310)
+		dprint("single_tab_width",single_tab_width)
+		self:_PositionTabs(single_tab_width, 310)
 		self.last_selected = self.tabs[1]
 		self.isinit = false
 	end

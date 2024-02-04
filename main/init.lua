@@ -50,4 +50,3 @@ if IsServer and TheShard:IsMaster() then
     end
 end
 
---TODO 带洞穴重置世界的时候

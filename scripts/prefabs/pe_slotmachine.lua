@@ -1,14 +1,29 @@
 require "prefabutil"
 local treasurehunt = require "PEslotmachinedata"
 
+local assets = 
+{
+	Asset("ANIM", "anim/slot_machine.zip"),
+}
+
+
 local prefabs =
 {	
 	"oinc_yuan",
 	"oinc10_yuan",
 	"oinc100_yuan",
 	"coffee",
-	"coffeebush",
+	"dug_coffeebush",
 }
+
+local sounds = 
+{
+	ok = "dontstarve_DLC002/common/slotmachine_mediumresult",
+	good = "dontstarve_DLC002/common/slotmachine_goodresult",
+	bad = "dontstarve_DLC002/common/slotmachine_badresult",
+}
+
+
 
 local goodspawns = 
 {
@@ -192,12 +207,6 @@ local function GetTreasureLootList(reward)
 	return lootlist
 end
 
-local sounds = 
-{
-	ok = "dontstarve_DLC002/common/slotmachine_mediumresult",
-	good = "dontstarve_DLC002/common/slotmachine_goodresult",
-	bad = "dontstarve_DLC002/common/slotmachine_badresult",
-}
 
 local function SpawnCritter(inst, critter, lootdropper, pt, delay)
 	delay = delay or GetRandomWithVariance(1,0.8)
@@ -389,21 +398,11 @@ local function CalcSanityAura(inst, observer)
 end
 
 
-local assets = 
-{
-	Asset("ANIM", "anim/slot_machine.zip"),
-	--Asset("MINIMAP_IMAGE", "slot_machine"),
-}
-
-
 local function onhammered(inst, worker)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
     end
-
-    if inst.components.container ~= nil then
-        inst.components.container:DropEverything()
-    end
+	inst.AnimState:PlayAnimation("hit")
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("wood")
@@ -414,22 +413,22 @@ end
 local function fn()
 	local inst = CreateEntity()
 
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
-	
-	--local minimap = inst.entity:AddMiniMapEntity()
-	--minimap:SetPriority( 5 )
-	--minimap:SetIcon( "slot_machine.png" )
+	inst.entity:AddMiniMapEntity()
+
+    inst.MiniMapEntity:SetIcon("minimap_slotmachine.tex")
 			
 	MakeObstaclePhysics(inst, 0.8, 1.2)
 	
-	anim:SetBank("slot_machine")
-	anim:SetBuild("slot_machine")
-	anim:PlayAnimation("idle")
+	inst.AnimState:SetBank("slot_machine")
+	inst.AnimState:SetBuild("slot_machine")
+	inst.AnimState:PlayAnimation("idle")
 	
 	inst:AddTag("structure")
+	inst:AddTag("slotmachine")
 
 	inst.entity:SetPristine()
 
@@ -441,12 +440,9 @@ local function fn()
 	inst.DoneSpinning = DoneSpinning
 	inst.busy = false
 	inst.sounds = sounds
-
-
 	inst.coins = 0
 	
 	inst:AddComponent("inspectable")
-
 	inst:AddComponent("lootdropper")
 
 	inst:AddComponent("trader")
@@ -454,16 +450,17 @@ local function fn()
 	inst.components.trader.onaccept = OnGetItemFromPlayer
 	inst.components.trader.onrefuse = OnRefuseItem
 
-
 	inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(2)
     inst.components.workable:SetOnFinishCallback(onhammered)
 
+	inst:SetStateGraph("SGslotmachine")
+
+	MakeSmallBurnable(inst, nil, nil, true)
+
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
-
-	inst:SetStateGraph("SGslotmachine")
 
 	return inst
 end

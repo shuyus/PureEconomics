@@ -29,6 +29,9 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()  
     inst.entity:AddNetwork()
+    inst.entity:AddMiniMapEntity()
+
+    inst.MiniMapEntity:SetIcon("minimap_shoppedestal.tex")
   
     MakeSnowCoveredPristine(inst)
     MakeSmallPropagator(inst)

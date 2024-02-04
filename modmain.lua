@@ -34,8 +34,12 @@ modimport("main/debug") --调试使用
 
 if IsServer then
     
-    modimport("overridelist")
-    modimport("main/mod")
+    dprint("modmain info",TheNet:GetIsServer(),TheNet:GetServerIsClientHosted(),TheShard:IsMaster(),TheNet:IsDedicated())
+    if not TheNet:IsDedicated() or TheShard:IsMaster() then --只有主世界需要加载数据
+        modimport("overridelist")
+        modimport("main/mod")
+        modimport("main/cantsell")
+    end
 
     AddPlayerPostInit(function(inst)
         inst:AddComponent("peplayercontext")

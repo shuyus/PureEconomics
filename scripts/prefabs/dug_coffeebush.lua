@@ -20,15 +20,15 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-    MakeInventoryFloatable(inst, "med", 0.3, 0.85)
-
     inst.AnimState:SetBank("coffeebush")
     inst.AnimState:SetBuild("coffeebush")
     inst.AnimState:PlayAnimation("dropped")
 
     inst:AddTag("deployedplant")
     inst:AddTag("wildfireprotected")
+
+    MakeInventoryPhysics(inst)
+    MakeInventoryFloatable(inst, "med", 0.3, 0.85)
 
     inst.entity:SetPristine()
 

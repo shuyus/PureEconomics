@@ -5,10 +5,11 @@
 
 local PE_FILTER_LIST={
 	{id = "food"},
+	{id = "resource"},
 	{id = "tool"},
 	{id = "smithing"},
 	{id = "fight"},
-	{id = "resource"},
+	{id = "decoration"},
 	{id = "precious"},
 }
 
