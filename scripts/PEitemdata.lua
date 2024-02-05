@@ -7,6 +7,9 @@ local LIST = require("PEitemlist")
 local TAB_ALL = {} -- 已定义价格物品列表，所有的价格查询都在这个表
 local TAB_UNPRICED = {} -- 文件未定义价格物品列表
 
+local iscoin = pe_context.iscoin
+local IsServer = TheNet:GetIsServer() or TheNet:IsDedicated()
+
 local PEItemData = Class(function(self)
     self.filters = {} -- 物品类别的可购买物品计数表
     self.special_filters = {} -- 特殊分类，不参与主面板的购买
@@ -74,9 +77,7 @@ function PEItemData:Init()
         self[f] = {} -- 商店面板使用的分类表
         for i, t in ipairs(v) do
             local name = t.name
-            if t.canbuy == nil then
-                t.canbuy = true
-            end
+            if t.canbuy == nil then t.canbuy = true end
             t.filter = f
             if TUNING.PUREECOMOMICS.UNLOCK_EVERYTHING then t.canbuy = true end
             table.insert(self[f], t)
@@ -129,13 +130,14 @@ function PEItemData:AddFilter(name, isspecial)
     end
 end
 
-function PEItemData:AddItem(info, filter, price, canbuy)
+function PEItemData:AddItem(info, filter, price, canbuy, sellrate)
     local name = info
     if istbl(name) then
         name = info.name
         filter = info.filter
         price = info.price
         canbuy = info.canbuy
+        sellrate = info.sellrate
     end
 
     if not isstr(name) or not isnum(price) or not isstr(filter) then return false end
@@ -151,7 +153,8 @@ function PEItemData:AddItem(info, filter, price, canbuy)
         name = name,
         price = price,
         filter = filter,
-        canbuy = canbuy
+        canbuy = canbuy,
+        sellrate = sellrate,
     }
 
     table.insert(self[filter], info)
@@ -201,7 +204,7 @@ function PEItemData:SetItemInfoWithoutSync(info)
         local res = self:AddItem(info)
         if not res then return false end
     else --修改物品
-        if TheNet:GetIsServer() and not info.origin then
+        if IsServer and not info.origin then
             local origin = TAB_ALL[name].origin or deepcopy(TAB_ALL[name]) --只保留最第一次的修改信息
             info.origin = origin
         else
@@ -225,13 +228,13 @@ function PEItemData:SetItemInfo(info,shard_sync)
     local name = info.name
     local res = self:SetItemInfoWithoutSync(info)
 
-    if res and TheNet:GetIsServer() then
+    if res and IsServer then
         if shard_sync==nil then shard_sync = true end
         local _info = deepcopy(TAB_ALL[name])
         if TheWorld then
             TheWorld.components.peworldcontext:AddChanged(_info,shard_sync)
         else 
-            dprint("PEItemData:SetItemInfo no TheWorld")
+            dprint("PEItemData:SetItemInfo no TheWorld") --丢掉也可以吧......
             self.wait_to_commit[_info.name] = _info
         end
     end
@@ -249,7 +252,7 @@ function PEItemData:SetItemInfoWithList(infos,shard_sync)
         end
     end
 
-    if TheNet:GetIsServer() then
+    if IsServer then
         if shard_sync==nil then shard_sync = true end
         local _infos = deepcopy(infos)
         if TheWorld then
@@ -285,7 +288,7 @@ function PEItemData:ClearItemChange(name)
         obj[k] = v
     end
 
-    if TheNet:GetIsServer() then
+    if IsServer then
         TheWorld.components.peworldcontext:RemoveChanged(name,true)
     end
 
@@ -313,6 +316,16 @@ function PEItemData:GetItemPrice(name)
         return TAB_ALL[name].price
     end
     return nil
+end
+
+function PEItemData:GetItemSellRate(name)
+    local info = TAB_ALL[name]
+    if info then
+        if iscoin(name) then return 1 end
+        if info.sellrate then return info.sellrate end
+        return info.filter == "precious" and TUNING.PUREECOMOMICS.PRECIOUS_MULTIPLE or TUNING.PUREECOMOMICS.BASE_MULTIPLE
+    end
+    return TUNING.PUREECOMOMICS.BASE_MULTIPLE
 end
 
 function PEItemData:GetItemsByNameArray(array)

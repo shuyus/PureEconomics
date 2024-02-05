@@ -1,18 +1,3 @@
--- 去除沃利调料后物品的后缀
-local function remove_worly_suffix(prefab_str)
-	prefab_str=string.gsub(prefab_str,"_spice_chili","")
-    prefab_str=string.gsub(prefab_str,"_spice_garlic","")
-    prefab_str=string.gsub(prefab_str,"_spice_salt","")
-    prefab_str=string.gsub(prefab_str,"_spice_sugar","")
-    return prefab_str
-end
-
-local function iscoin(prefab_str)
-	return prefab_str == "oinc_yuan" or prefab_str == "oinc10_yuan" or prefab_str == "oinc100_yuan"
-end
-
-GLOBAL.pe_context.remove_worly_suffix = remove_worly_suffix
-GLOBAL.pe_context.iscoin = iscoin
 
 if IsServer then
     local function cansell(inst)
@@ -28,7 +13,7 @@ if IsServer then
     end
 
 
-    local function PESellFn(player, inst)
+    function PESellFn(player, inst)
         local container = inst.components.container
         local context = player.components.peplayercontext
         local gotmoney = 0

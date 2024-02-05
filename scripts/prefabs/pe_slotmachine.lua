@@ -131,7 +131,7 @@ local actions =
 }
 
 
-
+--[[
 --Check treasurehunt
 do
 	--dprint("Check treasurehunt...")
@@ -165,7 +165,7 @@ do
 	CheckArr(okspawns)
 	CheckArr(badspawns)
 end
-
+]]
 
 local function GetTreasureLootList(reward)
 	local lootlist = {}

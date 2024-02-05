@@ -103,7 +103,7 @@ function PEWorldContext:SyncToClient(name, userid)
         SendModRPCToClient(GetClientModRPC("PureEconomics", "PEclientsync"), userid, DataDumper(info, nil, true))
     else
         SendModRPCToClient(GetClientModRPC("PureEconomics", "PEclientsimplesync"), userid, info.name, info.price,
-            info.canbuy)
+            info.canbuy, info.sellrate)
     end
 
     return true
@@ -119,7 +119,7 @@ function PEWorldContext:SyncToShard(name, shardid)
         SendModRPCToShard(GetShardModRPC("PureEconomics", "PEshardsync"), shardid, DataDumper(info, nil, true))
     else
         SendModRPCToShard(GetShardModRPC("PureEconomics", "PEshardsimplesync"), shardid, info.name, info.price,
-            info.canbuy)
+            info.canbuy, info.sellrate)
     end
 
     return true

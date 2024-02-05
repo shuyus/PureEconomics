@@ -21,11 +21,11 @@ if IsServer then
 		end
 	end
 	
-	local function PEShardSimpleSync(id, name, price, canbuy)
+	local function PEShardSimpleSync(id, name, price, canbuy, sellrate)
 		dprint("Shard simple Sync",id,name,price,canbuy)
 		if price and id~=tonumber(TheShard:GetShardId()) then
 			if canbuy == nil then canbuy =false end
-			pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy},false)
+			pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate},false)
 		end
 	end
 	
@@ -86,11 +86,11 @@ local function PEClientSyncAll(dumpdata)
 end
 
 
-local function PEClientSimpleSync(name, price, canbuy)
-	dprint("ClientSimpleSync",name,price,canbuy)
+local function PEClientSimpleSync(name, price, canbuy, sellrate)
+	dprint("ClientSimpleSync",name,price,canbuy,sellrate)
 	if not TheNet:GetIsServer() and price then
 		if canbuy == nil then canbuy =false end
-		pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy})
+		pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate})
 	end
 end
 

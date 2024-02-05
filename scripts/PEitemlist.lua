@@ -103,34 +103,34 @@ PE_GOODS_LIST.food =
 
 	{name = "smallmeat", price = 18},--小肉
 	{name = "meat", price = 30},--大肉
-	{name = "monstermeat", price = 27},--怪兽肉
+	{name = "monstermeat", price = 26},--怪兽肉
 	{name = "drumstick", price = 18},--鸡腿
 	{name = "bird_egg", price = 12},--鸡蛋
-	{name = "fishmeat_small", price = 20},--小鱼块
-	{name = "fishmeat", price = 33},--生鱼肉
+	{name = "fishmeat_small", price = 18},--小鱼块
+	{name = "fishmeat", price = 32},--生鱼肉
 	{name = "kelp", price = 10},--海带 
-	{name = "barnacle", price = 14, canbuy = false},--藤壶
-	{name = "fig", price = 11, canbuy = false},--无花果
+	{name = "barnacle", price = 20, canbuy = false},--藤壶
+	{name = "fig", price = 20, canbuy = false},--无花果
 	{name = "wobster_sheller_land", price = 80},--龙虾
 	{name = "wobster_moonglass_land", price = 100, canbuy = false},--月光龙虾
 
 	{name = "eel", price = 60, canbuy = false},--鳗鱼
 	{name = "froglegs", price = 14},--青蛙腿
-	{name = "plantmeat", price = 33, canbuy = false},--食人花肉
-	{name = "batwing", price = 62},--蝙蝠翅膀
-	{name = "batnose", price = 43, canbuy = false},--裸露鼻孔
-	{name = "trunk_summer", price = 125, canbuy = false},--红色象鼻
-	{name = "trunk_winter", price = 200, canbuy = false},--蓝色象鼻
-	{name = "berries", price = 3},--浆果
+	{name = "plantmeat", price = 30, canbuy = false},--食人花肉
+	{name = "batwing", price = 60},--蝙蝠翅膀
+	{name = "batnose", price = 40, canbuy = false},--裸露鼻孔
+	{name = "trunk_summer", price = 120, canbuy = false},--红色象鼻
+	{name = "trunk_winter", price = 180, canbuy = false},--蓝色象鼻
+	{name = "berries", price = 4},--浆果
 	{name = "berries_juicy", price = 6},--蜜汁浆果
 	{name = "rock_avocado_fruit_ripe", price = 8, canbuy = false},--成熟石果
 	{name = "cutlichen", price = 4, canbuy = false},--苔藓
-	{name = "ice", price = 6},--冰
-	{name = "red_cap", price = 8},--红蘑菇
-	{name = "green_cap", price = 12},--绿蘑菇
+	{name = "ice", price = 4},--冰
+	{name = "red_cap", price = 10},--红蘑菇
+	{name = "green_cap", price = 14},--绿蘑菇
 	{name = "blue_cap", price = 16},--蓝蘑菇
 	{name = "moon_cap", price = 24, canbuy = false},--月亮蘑菇
-	{name = "cactus_meat", price = 19},--仙人掌
+	{name = "cactus_meat", price = 18},--仙人掌
 	{name = "cactus_flower", price = 30},--仙人掌花
 	{name = "cave_banana", price = 16},--香蕉
 	{name = "butterflywings", price = 8},--蝴蝶翅膀
@@ -139,23 +139,26 @@ PE_GOODS_LIST.food =
 	{name = "honey", price = 8},--蜂蜜
 	{name = "petals", price = 2},--花瓣
 	{name = "petals_evil", price = 8, canbuy = false},--噩梦花瓣
-	{name = "carrot", price = 12},--胡萝卜
-	{name = "corn", price = 18},--玉米
-	{name = "durian", price = 24},--榴莲
-	{name = "pomegranate", price = 21},--石榴
-	{name = "eggplant", price = 28},--茄子
-	{name = "pumpkin", price = 35},--南瓜
-	{name = "watermelon", price = 30},--西瓜
-	{name = "dragonfruit", price = 75},--火龙果
-	{name = "asparagus", price = 18},--芦笋
-	{name = "onion", price = 33},--洋葱
-	{name = "potato", price = 28},--土豆
-	{name = "tomato", price = 24},--番茄
-	{name = "garlic", price = 21},--大蒜
-	{name = "pepper", price = 15},--辣椒
-	{name = "forgetmelots", price = 7},--必忘我
-	{name = "tillweed", price = 2},--犁地草
-	{name = "firenettles", price = 4},--火荨麻叶
+
+	{name = "carrot", price = 12, sellrate=.6},--胡萝卜
+	{name = "onion", price = 32, sellrate=.8, canbuy = false},--洋葱
+	{name = "potato", price = 30, sellrate=.8, canbuy = false},--土豆
+	{name = "corn", price = 24, sellrate=.8, canbuy = false},--玉米
+	{name = "tomato", price = 24, sellrate=.8, canbuy = false},--番茄
+	{name = "garlic", price = 30, sellrate=.8, canbuy = false},--大蒜
+
+	{name = "dragonfruit", price = 40, sellrate=.8, canbuy = false},--火龙果
+	{name = "pomegranate", price = 26, sellrate=.8, canbuy = false},--石榴
+	{name = "eggplant", price = 26, sellrate=.8, canbuy = false},--茄子
+	{name = "pumpkin", price = 28, sellrate=.8, canbuy = false},--南瓜
+	{name = "watermelon", price = 28, sellrate=.8, canbuy = false},--西瓜
+	{name = "asparagus", price = 26, sellrate=.8, canbuy = false},--芦笋
+	{name = "pepper", price = 30, sellrate=.8, canbuy = false},--辣椒
+
+	{name = "durian", price = 30, sellrate=.9, canbuy = false},--榴莲
+	{name = "forgetmelots", price = 8, sellrate=.9, canbuy = false},--必忘我
+	{name = "tillweed", price = 4, sellrate=.9, canbuy = false},--犁地草
+	{name = "firenettles", price = 8, sellrate=.9, canbuy = false},--火荨麻叶
 }
 
 PE_GOODS_LIST.fight = {
@@ -167,7 +170,7 @@ PE_GOODS_LIST.fight = {
 	{name = "hambat", price = nil},--火腿棒
 	{name = "footballhat", price = nil},--猪皮头盔
 	{name = "cookiecutterhat", price = nil, canbuy = false},--饼干切割机帽子
-	{name = "tentaclespike", price = 115},--触手棒
+	{name = "tentaclespike", price = 110},--触手棒
 	{name = "batbat", price = nil},--蝙蝠棒
 	{name = "nightsword", price = nil},--影刀
 	{name = "armor_sanity", price = nil},--影甲
@@ -189,7 +192,7 @@ PE_GOODS_LIST.fight = {
 	{name = "gunpowder", price = nil},--炸药
 	{name = "trap_teeth", price = nil},--狗牙陷阱
 	{name = "beemine", price = nil},--蜜蜂地雷
-	{name = "waterplant_bomb", price = 29, canbuy = false},--种壳
+	{name = "waterplant_bomb", price = 30, canbuy = false},--种壳
 }
 
 PE_GOODS_LIST.tool = {
@@ -317,7 +320,7 @@ PE_GOODS_LIST.smithing =
 	{name = "winterhat", price = nil},--冬帽
 	{name = "nightcaphat", price = 30, canbuy = false},--睡帽
 	{name = "torch", price = nil},--火把
-	{name = "redlantern", price = 124},--灯笼
+	{name = "redlantern", price = 40, canbuy = false},--灯笼
 	{name = "lantern", price = nil},--提灯
 	{name = "minerhat", price = nil},--矿工帽
 	{name = "pumpkin_lantern", price = nil},--南瓜灯
@@ -327,7 +330,7 @@ PE_GOODS_LIST.smithing =
 	{name = "featherhat", price = nil},--羽毛帽
 	{name = "bushhat", price = nil},--浆果帽
 	{name = "tophat", price = nil},--高礼帽
-	{name = "spiderhat", price = 325},--女王帽
+	{name = "spiderhat", price = 300},--女王帽
 	{name = "goggleshat", price = nil},--时尚眼镜
 	{name = "sweatervest", price = nil},--小巧背心
 	{name = "onemanband", price = nil},--独奏乐器
@@ -362,9 +365,9 @@ PE_GOODS_LIST.resource =
 	{name = "log", price = 10},--木头
 	{name = "charcoal", price = 6},--木炭
 	{name = "driftwood_log", price = 34},--浮木桩
-	{name = "cutreeds", price = 8},--芦苇
+	{name = "cutreeds", price = 10},--芦苇
 	{name = "rocks", price = 8},--石头
-	{name = "flint", price = 6},--燧石
+	{name = "flint", price = 10},--燧石
 	{name = "nitre", price = 12},--硝石
 	{name = "goldnugget", price = 14},--金块
 	{name = "ash", price = 6},--灰烬
@@ -380,50 +383,50 @@ PE_GOODS_LIST.resource =
 	{name = "trinket_6", price = 100, canbuy = false},--烂电线
 
 
-	{name = "saltrock", price = 22},--盐晶
+	{name = "saltrock", price = 24},--盐晶
 	{name = "rock_avocado_fruit", price = 18, canbuy = false},--石果
 	{name = "marble", price = 34},--大理石
-	{name = "moonrocknugget", price = 34},--月石
+	{name = "moonrocknugget", price = 34, canbuy = false},--月石
 
 	{name = "palmcone_scale", price = 48},--棕榈松果树鳞片
 	
-	{name = "dug_berrybush", price = 27, canbuy = false},--浆果丛
-	{name = "dug_berrybush2", price = 34, canbuy = false},--热带浆果丛
+	{name = "dug_berrybush", price = 28, canbuy = false},--浆果丛
+	{name = "dug_berrybush2", price = 28, canbuy = false},--热带浆果丛
 	{name = "dug_berrybush_juicy", price = 40, canbuy = false},--蜜汁浆果丛
-	{name = "dug_bananabush", price = 25, canbuy = false},--香蕉丛
-	{name = "dug_grass", price = 20, canbuy = false},--草丛
-	{name = "dug_sapling", price = 17, canbuy = false},--树枝丛
+	{name = "dug_bananabush", price = 60, canbuy = false},--香蕉丛
+	{name = "dug_grass", price = 18, canbuy = false},--草丛
+	{name = "dug_sapling", price = 20, canbuy = false},--树枝丛
 	{name = "dug_sapling_moon", price = 24, canbuy = false},--月岛树枝丛
-	{name = "dug_marsh_bush", price = 21, canbuy = false},--尖刺丛
-	{name = "dug_monkeytail", price = 40, canbuy = false},--猴尾草
-	{name = "dug_rock_avocado_bush", price = 24, canbuy = false},--月岛石果丛
+	{name = "dug_marsh_bush", price = 16, canbuy = false},--尖刺丛
+	{name = "dug_monkeytail", price = 60, canbuy = false},--猴尾草
+	{name = "dug_rock_avocado_bush", price = 60, canbuy = false},--月岛石果丛
 
 
 
 	{name = "pinecone", price = 5},--常青树种子
 	{name = "acorn", price = 6},--桦树种子
 
-	{name = "twiggy_nut", price = 6},--多枝树种
+	{name = "twiggy_nut", price = 8},--多枝树种
 	{name = "palmcone_seed", price = 36, canbuy = false},--棕榈松果树芽
 	
-	{name = "lureplantbulb", price = 180, canbuy = false},--食人花
-	{name = "livingtree_root", price = 100, canbuy = false},--完全正常的树根
-	{name = "rock_avocado_fruit_sprout", price = 85, canbuy = false},--发芽的石果
-	{name = "bullkelp_root", price = 51, canbuy = false},--公牛海带茎
+	{name = "lureplantbulb", price = 160, canbuy = false},--食人花
+	{name = "livingtree_root", price = 60, canbuy = false},--完全正常的树根 ?
+	{name = "rock_avocado_fruit_sprout", price = 80, canbuy = false},--发芽的石果
+	{name = "bullkelp_root", price = 50, canbuy = false},--公牛海带茎
 	{name = "waterplant_planter", price = 68, canbuy = false},--海芽插穗
-	{name = "dug_trap_starfish", price = 188, canbuy = false},--海星陷阱
+	{name = "dug_trap_starfish", price = 180, canbuy = false},--海星陷阱
 	{name = "seeds", price = 6},--种子
-	{name = "foliage", price = 6},--蕨叶
-	{name = "succulent_picked", price = 10},--肉质植物
+	{name = "foliage", price = 4},--蕨叶
+	{name = "succulent_picked", price = 4},--肉质植物
 	{name = "lightbulb", price = 12},--荧光果
 	{name = "wormlight_lesser", price = 24},--小发光浆果
 	{name = "wormlight", price = 68, canbuy = false},--发光浆果
-	{name = "fireflies", price = 84},--萤火虫
-	{name = "lightflier", price = 101, canbuy = false},--球状光虫
+	{name = "fireflies", price = 80, canbuy = false},--萤火虫
+	{name = "lightflier", price = 80, canbuy = false},--球状光虫
 	{name = "redgem", price = 100},--红宝石
 	{name = "bluegem", price = 100},--蓝宝石
 	{name = "purplegem", price = 200},--紫宝石
-	{name = "livinglog", price = 90},--活木
+	{name = "livinglog", price = 100, canbuy = true, sellrate = .1},--活木 防止植物人拿血刷钱
 	{name = "nightmarefuel", price = 32},--噩梦燃料
 	{name = "spidergland", price = 16},--蜘蛛腺体
 	{name = "silk", price = 20},--蜘蛛网
@@ -432,13 +435,13 @@ PE_GOODS_LIST.resource =
 	{name = "coontail", price = 100},--猫尾
 	{name = "boneshard", price = 20},--骨片
 	{name = "houndstooth", price = 38},--狗牙
-	{name = "stinger", price = 18},--蜂刺
+	{name = "stinger", price = 16},--蜂刺
 	{name = "cookiecuttershell", price = 52, canbuy = false},--饼干切割机壳
 	{name = "messagebottleempty", price = 38, canbuy = false},--空瓶子
 	{name = "horn", price = 180},--牛角
-	{name = "beefalowool", price = 21},--牛毛
+	{name = "beefalowool", price = 22},--牛毛
 	{name = "pigskin", price = 48},--猪皮
-	{name = "manrabbit_tail", price = 53},--兔毛
+	{name = "manrabbit_tail", price = 54},--兔毛
 	{name = "feather_crow", price = 16},--黑鸟毛
 	{name = "feather_robin", price = 18},--红鸟毛
 	{name = "feather_robin_winter", price = 22},--蓝鸟毛
@@ -450,20 +453,20 @@ PE_GOODS_LIST.resource =
 	{name = "spoiled_food", price = 6},--腐烂食物
 	{name = "poop", price = 12},--屎
 	{name = "guano", price = 10},--鸟屎
-	{name = "phlegm", price = 100},--鼻涕
+	{name = "phlegm", price = 60},--鼻涕
 	{name = "glommerfuel", price = 38},--格罗姆粘液
 	{name = "slurtleslime", price = 30},--含糊虫粘液
 	{name = "slurtle_shellpieces", price = 30},--外壳碎片
-	{name = "spore_medium", price = 55},--红色孢子
-	{name = "spore_small", price = 55},--绿色孢子
-	{name = "spore_tall", price = 55},--蓝色孢子
+	{name = "spore_medium", price = 50},--红色孢子
+	{name = "spore_small", price = 50},--绿色孢子
+	{name = "spore_tall", price = 50},--蓝色孢子
 	{name = "ghostflower", price = 200, canbuy = false},--哀悼荣耀
-	{name = "tallbirdegg", price = 130, canbuy = false},--高鸟蛋
+	{name = "tallbirdegg", price = 100, canbuy = false},--高鸟蛋
 	--小动物
 	{name = "butterfly", price = 16},--蝴蝶
 	{name = "bee", price = 22},--蜜蜂
 	{name = "rabbit", price = 24},--兔子
-	{name = "mole", price = 36},--地鼠
+	{name = "mole", price = 36, canbuy = false},--地鼠
 	{name = "carrat", price = 42, canbuy = false},--胡萝卜鼠
 	{name = "lightcrab", price = 136, canbuy = false},--发光蟹
 	--鸟类
@@ -504,7 +507,7 @@ PE_GOODS_LIST.precious =
 	{name = "batnosehat", price = 800},--牛奶帽
 	{name = "goatmilk", price = 1000},--电羊奶
 	{name = "butter", price = 800},--蝴蝶黄油
-	{name = "mandrake", price = 2400},--曼德拉草
+	{name = "mandrake", price = 1200, sellrate = .1},--曼德拉草
 	--巨鹿相关
 	{name = "deerclops_eyeball", price = 2400},--眼球
 	{name = "eyebrellahat", price = nil},--眼球伞
@@ -514,7 +517,7 @@ PE_GOODS_LIST.precious =
 	--麋鹿鹅相关
 	{name = "goose_feather", price = 200},--鹅毛
 	--熊大相关
-	{name = "bearger_fur", price = 2800},--熊皮
+	{name = "bearger_fur", price = 2400},--熊皮
 	{name = "icepack", price = nil},--冰背包
 	{name = "beargervest", price = nil},--熊皮大衣
 	--龙蝇相关
@@ -523,17 +526,17 @@ PE_GOODS_LIST.precious =
 	{name = "armordragonfly", price = nil},--龙鳞衣
 	--蜂后相关
 	{name = "hivehat", price = 2000},--蜂王冠
-	{name = "royal_jelly", price = 1500},--蜂王浆
-	{name = "jellybean", price = 600},--糖豆
+	{name = "royal_jelly", price = 400},--蜂王浆
+	{name = "jellybean", price = 500},--糖豆
 	--蚁狮
-	{name = "townportaltalisman", price = 300},--沙之石	
+	{name = "townportaltalisman", price = 200},--沙之石	
 	--影织者
-	{name = "fossil_piece", price = 400},--化石碎片
+	{name = "fossil_piece", price = 200},--化石碎片
 	{name = "armorskeleton", price = 4000},--骨甲
 	{name = "skeletonhat", price = 3200},--骨盔
 	{name = "thurible", price = 2400},--暗影香炉	
 	--{name = "atrium_key", price = 1200},--远古钥匙
-	{name = "shadowheart", price = 800},--暗影之心
+	{name = "shadowheart", price = 800, sellrate = .01},--暗影之心 1%防止刷心脏
 	--毒菌蟾蜍相关
 	{name = "sleepbomb", price = nil},--催眠袋
 	{name = "red_mushroomhat", price = nil},--红菇帽
@@ -542,23 +545,26 @@ PE_GOODS_LIST.precious =
 	{name = "shroom_skin", price = 1600},--蛤蟆皮
 
 	--天体相关
-	{name = "purebrilliance", price = 300},-- 纯粹辉煌
-	{name = "moonstorm_spark", price = 200},--月熠
-	{name = "moonglass_charged", price = 220, canbuy = false},--灌注月亮碎片
+	{name = "purebrilliance", price = 300, canbuy = false},-- 纯粹辉煌
+	{name = "moonstorm_spark", price = 200, canbuy = false},--月熠
+	{name = "moonglass_charged", price = 240, canbuy = false},--灌注月亮碎片
 	{name = "moonstorm_static_item", price = 2000},--约束静电
 	--{name = "moonrockseed", price = 2000},--天体宝球
 	{name = "alterguardianhat", price = 8000},--启迪之冠
 	{name = "alterguardianhatshard", price = 1000},--启迪之冠碎片
 	--远古相关
-	{name = "greengem", price = 1400},--绿宝石
-	{name = "orangegem", price = 1100},--橙宝石
-	{name = "yellowgem", price = 1100},--黄宝石
+	{name = "greengem", price = 1200, canbuy = false},--绿宝石
+	{name = "orangegem", price = 1200, canbuy = false},--橙宝石
+	{name = "yellowgem", price = 1200, canbuy = false},--黄宝石
+
+	{name = "opalpreciousgem", price = 4800, canbuy = false, sellrate = .1},--彩虹宝石
+
 	{name = "eyeturret_item", price = nil},--眼球塔
 	{name = "greenstaff", price = nil},--绿法杖
 	{name = "orangestaff", price = nil},--橙法杖
 	{name = "yellowstaff", price = nil},--黄法杖
 	{name = "gears", price = 400},--齿轮
-	{name = "minotaurhorn", price = 2500},--犀牛角
+	{name = "minotaurhorn", price = 2400},--犀牛角
 	{name = "thulecite_pieces", price = 30, canbuy = false},--铥矿碎片
 	{name = "thulecite", price = nil, canbuy = false},--铥矿
 	{name = "armorruins", price = nil},--铥矿甲
@@ -587,27 +593,27 @@ PE_GOODS_LIST.precious =
 	{name = "polly_rogershat", price = 2800},--波莉·罗杰的帽子
 	{name = "malbatross_feather", price = 800},--邪天翁羽毛
 	{name = "malbatross_beak", price = 1000},--邪天翁喙
-	{name = "gnarwail_horn", price = 650},--一角鲸的角
+	{name = "gnarwail_horn", price = 800},--一角鲸的角
 	{name = "hermit_pearl", price = 2000},--珍珠的珍珠
 	{name = "hermit_cracked_pearl", price = 100, canbuy = false},--开裂珍珠
 	--{name = "messagebottle", price = 250},--瓶中信
 	{name = "trident", price = nil},--刺耳三叉戟
-	{name = "moonbutterfly", price = 300},--月蛾
-	{name = "moonglass", price = 200},--月亮碎片
+	{name = "moonbutterfly", price = 300, canbuy = false},--月蛾
+	{name = "moonglass", price = 200, canbuy = false},--月亮碎片
 	--疯猪
 	{name = "horrorfuel", price = 1000, canbuy = false},--纯粹恐惧
-	{name = "dreadstone", price = 300, canbuy = false},--绝望石
+	{name = "dreadstone", price = 400, canbuy = false},--绝望石
 	{name = "armordreadstone", price = nil},--绝望石甲
 	{name = "dreadstonehat", price = nil},--绝望石盔
 	--水中木
-	{name = "oceantreenut", price = 9999},--疙瘩树果
+	{name = "oceantreenut", price = 10000},--疙瘩树果
 	--坎普斯
-	{name = "krampus_sack", price = 9999},--小偷包
+	{name = "krampus_sack", price = 10000},--小偷包
 	--钢羊
 	{name = "steelwool", price = 800},--刚羊毛
 	--海象
-	{name = "walrus_tusk", price = 800},--海象牙
-	{name = "walrushat", price = 2000},--海象帽
+	{name = "walrus_tusk", price = 800, canbuy = false},--海象牙
+	{name = "walrushat", price = 1600},--海象帽
 	--韦伯玩家
 	--{name = "spider_healer", price = 520, canbuy = false},--护士蜘蛛
 	
@@ -618,10 +624,10 @@ PE_GOODS_LIST.precious =
 
 	--{name = "oar_monkey", price = 300},--战浆
 
-	{name = "lightninggoathorn", price = 1200},--电羊角
-	{name = "slurper_pelt", price = 450},--辍食者皮
-	{name = "slurtlehat", price = 1200},--蜗牛帽
-	{name = "armorsnurtleshell", price = 1800},--蜗牛壳
+	{name = "lightninggoathorn", price = 800, canbuy = true, sellrate = .15},--电羊角
+	{name = "slurper_pelt", price = 400, canbuy = true, sellrate = .2},--辍食者皮
+	{name = "slurtlehat", price = 800, canbuy = true, sellrate = .1},--蜗牛帽
+	{name = "armorsnurtleshell", price = 1000, canbuy = true, sellrate = .1},--蜗牛壳
 	{name = "armorslurper", price = nil},--饥饿腰带
 	{name = "cane", price = nil},--步行手杖
 	{name = "featherfan", price = nil},--鹅毛扇

@@ -1,5 +1,32 @@
+local good = {
+
+}
 
 
+local ok = {
+	["slot_cooker"] = 
+	{
+		loot = 
+		{
+			goatmilk = 2,
+			butter = 3,
+		},
+	},
+}
+
+
+local bad = {
+
+}
+
+
+local slotmachine_data = {
+	good=good,
+	ok=ok,
+	bad=bad
+}
+
+--[[
 local internalloot =
 {
 
@@ -675,5 +702,5 @@ local internalloot =
 			tallbird = 2,
 		},
 	},
-}
-return internalloot
+}]]
+return slotmachine_data

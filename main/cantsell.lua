@@ -3,7 +3,8 @@ local cant_sell = {
     "lucy",--露西斧(谁会卖老婆啊)
     "abigail_flower",--阿比盖尔花
     "messagebottle",--瓶中信
-    "shadowheart",--暗影之心
+    -- "shadowheart",--暗影之心  1%售卖倍率，不用禁止了
+
     -- "chester_eyebone", --眼骨
     -- "glommerflower", --格罗姆花
     -- "hutch_fishbowl", --星空(哈奇鱼缸)

@@ -1,6 +1,3 @@
-local pe_upvaluehelper = require("3rd/PEupvaluehelper")
-local PEItemData = require("PEitemdata") --核心组件，储存所有商品信息，计算合成品价格
-item_data = PEItemData()
 G = {} --为了避免莫名其妙的strict限制
 setmetatable(G,{
     ["__newindex"] = function(t, k, v)
@@ -21,10 +18,25 @@ else
     pe_context = G.pe_context
 end
 pe_context.G = G
-G.pe_upvaluehelper = pe_upvaluehelper
-G.pe_item_data = item_data
 
---- 
+
+pe_context.IsServer = IsServer
+
+function remove_worly_suffix(prefab_str) -- 去除沃利调料后物品的后缀
+	prefab_str=string.gsub(prefab_str,"_spice_chili","")
+    prefab_str=string.gsub(prefab_str,"_spice_garlic","")
+    prefab_str=string.gsub(prefab_str,"_spice_salt","")
+    prefab_str=string.gsub(prefab_str,"_spice_sugar","")
+    return prefab_str
+end
+
+function iscoin(prefab_str)
+	return prefab_str == "oinc_yuan" or prefab_str == "oinc10_yuan" or prefab_str == "oinc100_yuan"
+end
+
+pe_context.remove_worly_suffix = remove_worly_suffix
+pe_context.iscoin = iscoin
+
 G.isstr = function(vla) return type(vla) == "string" end
 G.isnum = function(vla) return type(vla) == "number" end
 G.isnil = function(vla) return type(vla) == "nil" end
@@ -50,3 +62,9 @@ if IsServer and TheShard:IsMaster() then
     end
 end
 
+local pe_upvaluehelper = require("3rd/PEupvaluehelper")
+G.pe_upvaluehelper = pe_upvaluehelper
+
+local PEItemData = require("PEitemdata") --核心组件，储存所有商品信息，计算合成品价格
+item_data = PEItemData()
+G.pe_item_data = item_data

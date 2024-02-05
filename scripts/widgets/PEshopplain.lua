@@ -131,7 +131,9 @@ local function CellWidgetsCtor(info, isedit, main)
 		w.back.OnControl = player_oncontrol
 	end
 
-
+	if info.sellrate and isnum(info.sellrate)then
+		w.back:SetHoverText(STRINGS.PUREECOMOMICS.SELLRATE_INFO_1..tostring(info.sellrate*100).."%")	
+	end
 	return w
 end
 

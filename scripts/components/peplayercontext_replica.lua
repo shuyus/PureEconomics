@@ -8,7 +8,7 @@ local PEPlayerContext = Class(function(self, inst)
     self.precious = {}
 
     if not TheNet:IsDedicated() then
-        local function _onchanged()
+        local function _onchanged(inst)
             if ThePlayer == inst then
                 local current_screen = TheFrontEnd:GetActiveScreen()
                 if current_screen and current_screen.name == "PEShopScreen" then

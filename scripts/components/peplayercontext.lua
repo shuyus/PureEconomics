@@ -118,14 +118,7 @@ function PEPlayerContext:SellByInstArray(insts)
 		local name = remove_worly_suffix(inst.prefab)
 		local single_price = item_data:GetItemPrice(name) or 1
 		single_price = get_price_after_count_loss(inst, single_price)
-		local multiple = TUNING.PUREECOMOMICS.BASE_MULTIPLE
-
-		if iscoin(inst.prefab) then
-			multiple = 1
-		elseif item_data:GetItemFilter(inst.prefab) == "precious" then 
-			multiple = TUNING.PUREECOMOMICS.PRECIOUS_MULTIPLE
-		end
-
+		local multiple = item_data:GetItemSellRate(name)
 		total_price = total_price + single_price * stack_size * multiple
 		inst:Remove()
 	end
