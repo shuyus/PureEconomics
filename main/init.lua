@@ -34,8 +34,32 @@ function iscoin(prefab_str)
 	return prefab_str == "oinc_yuan" or prefab_str == "oinc10_yuan" or prefab_str == "oinc100_yuan"
 end
 
+-- 有耐久度燃料值新鲜度的物品根据剩余百分比打折计算
+-- TODO 算法待优化,提灯用光了就不值钱显然不合理
+function get_price_after_count_loss(inst,oriprice)
+	local newprice = oriprice
+	if inst.components.finiteuses  then
+		local percent = inst.components.finiteuses:GetPercent()
+		newprice = math.min(oriprice*percent,newprice)
+	end
+	if inst.components.fueled  then
+		local percent = inst.components.fueled:GetPercent()
+		newprice = math.min(oriprice*percent,newprice)
+	end
+	if inst.components.armor and inst.components.armor.maxcondition > 0  then
+		local percent = inst.components.armor:GetPercent()
+		newprice = math.min(oriprice*percent,newprice)
+	end
+	if inst.components.perishable then
+		local percent = inst.components.perishable:GetPercent()
+		newprice = math.min(oriprice*percent,newprice)  
+	end
+	return newprice
+end
+
 pe_context.remove_worly_suffix = remove_worly_suffix
 pe_context.iscoin = iscoin
+pe_context.get_price_after_count_loss = get_price_after_count_loss
 
 G.isstr = function(vla) return type(vla) == "string" end
 G.isnum = function(vla) return type(vla) == "number" end
@@ -68,3 +92,15 @@ G.pe_upvaluehelper = pe_upvaluehelper
 local PEItemData = require("PEitemdata") --核心组件，储存所有商品信息，计算合成品价格
 item_data = PEItemData()
 G.pe_item_data = item_data
+
+
+function Caculate_Sell_Price(inst)
+    local stack_size = inst.components.stackable and inst.components.stackable.stacksize or 1
+    local name = remove_worly_suffix(inst.prefab)
+    local single_price = item_data:GetItemPrice(name) or 1
+    single_price = get_price_after_count_loss(inst, single_price)
+    local multiple = item_data:GetItemSellRate(name)
+    return single_price * stack_size * multiple
+end
+
+pe_context.Caculate_Sell_Price = Caculate_Sell_Price

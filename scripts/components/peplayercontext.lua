@@ -6,29 +6,8 @@
 local item_data = pe_item_data
 local remove_worly_suffix = pe_context.remove_worly_suffix
 local iscoin = pe_context.iscoin
+local Caculate_Sell_Price = pe_context.Caculate_Sell_Price
 
--- 有耐久度燃料值新鲜度的物品根据剩余百分比打折计算
--- TODO 算法待优化,提灯用光了就不值钱显然不合理
-local function get_price_after_count_loss(inst,oriprice)
-	local newprice = oriprice
-	if inst.components.finiteuses  then
-		local percent = inst.components.finiteuses:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.fueled  then
-		local percent = inst.components.fueled:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.armor and inst.components.armor.maxcondition > 0  then
-		local percent = inst.components.armor:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.perishable then
-		local percent = inst.components.perishable:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)  
-	end
-	return newprice
-end
 
 
 local function oncashchanged(self,cash,old_cash)
@@ -114,12 +93,7 @@ end
 function PEPlayerContext:SellByInstArray(insts)
 	local total_price = 0 
 	for i,inst in ipairs(insts) do
-		local stack_size = inst.components.stackable and inst.components.stackable.stacksize or 1
-		local name = remove_worly_suffix(inst.prefab)
-		local single_price = item_data:GetItemPrice(name) or 1
-		single_price = get_price_after_count_loss(inst, single_price)
-		local multiple = item_data:GetItemSellRate(name)
-		total_price = total_price + single_price * stack_size * multiple
+		total_price = total_price + Caculate_Sell_Price(inst)
 		inst:Remove()
 	end
 	total_price = math.floor(total_price)

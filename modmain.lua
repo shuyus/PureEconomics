@@ -43,7 +43,7 @@ if IsServer then
 
     AddPlayerPostInit(function(inst)
         inst:AddComponent("peplayercontext")
-        inst.components.peplayercontext:SetCash(500000) --TODO 删掉
+        if PE_DEBUG then inst.components.peplayercontext:SetCash(500000) end --TODO 测试代码，待删
 
         if inst.components.caffeinated == nil then
             inst:AddComponent("pecaffeinated")

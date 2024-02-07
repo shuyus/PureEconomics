@@ -118,7 +118,7 @@ local function PEClientPreciousSync(dumpdata)
 
 	local success, array = RunInSandbox(dumpdata)
 	dprint(success,array)
-	if success and string.len(dumpdata) > 0 then
+	if ThePlayer and success and string.len(dumpdata) > 0 then
 		ThePlayer.replica.peplayercontext:SetPreciousArray(array) --TODO ThePlayer可能是nil
 	end
 end

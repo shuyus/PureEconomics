@@ -16,7 +16,14 @@ local ok = {
 
 
 local bad = {
-
+	["slot_spoiled"] = 
+	{
+		loot = 
+		{
+			goatmilk = 2,
+			butter = 3,
+		},
+	},
 }
 
 

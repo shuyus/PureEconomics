@@ -106,7 +106,7 @@ local function CellWidgetsCtor(info, isedit, main)
 	w.back.main = main
 	w.back.item_name = name
 	w.back.canbuy = info.canbuy
-	w.focus_forward = w.back --TODO
+	--w.focus_forward = w.back 
 
 	w.info = w:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small.tex", "button_small.tex", nil, nil, {1,1}, {0,0}))
 	w.info:SetPosition(1,-50)
@@ -131,9 +131,9 @@ local function CellWidgetsCtor(info, isedit, main)
 		w.back.OnControl = player_oncontrol
 	end
 
-	if info.sellrate and isnum(info.sellrate)then
-		w.back:SetHoverText(STRINGS.PUREECOMOMICS.SELLRATE_INFO_1..tostring(info.sellrate*100).."%")	
-	end
+	
+	w.back:SetHoverText(STRINGS.PUREECOMOMICS.SELLRATE_INFO_1..tostring(item_data:GetItemSellRate(name)*100).."%")	
+
 	return w
 end
 

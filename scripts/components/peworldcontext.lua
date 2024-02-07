@@ -28,7 +28,7 @@ local PEWorldContext = Class(function(self, world)
 
     if not TheNet:IsDedicated() or TheShard:IsMaster() then
         self:MasterInit()
-        self.inst:DoTaskInTime(.1,function()--TODO 这里的逻辑可能会在重置世界时向所有世界发送两遍RPC
+        self.inst:DoTaskInTime(.1,function()--TODO 这里的逻辑可能会配合主动连接逻辑在重置世界时向所有世界发送两遍RPC
             self:SyncListToClient(self.changed)
             self:SyncListToShard(self.changed)
             self:SyncCanSellListToShard()

@@ -8,6 +8,7 @@ local TAB_ALL = {} -- 已定义价格物品列表，所有的价格查询都在�
 local TAB_UNPRICED = {} -- 文件未定义价格物品列表
 
 local iscoin = pe_context.iscoin
+local remove_worly_suffix  = pe_context.remove_worly_suffix
 local IsServer = TheNet:GetIsServer() or TheNet:IsDedicated()
 
 local PEItemData = Class(function(self)
@@ -133,7 +134,7 @@ end
 function PEItemData:AddItem(info, filter, price, canbuy, sellrate)
     local name = info
     if istbl(name) then
-        name = info.name
+        name = remove_worly_suffix(info.name)
         filter = info.filter
         price = info.price
         canbuy = info.canbuy
@@ -173,6 +174,7 @@ function PEItemData:AddItem(info, filter, price, canbuy, sellrate)
 end
 
 function PEItemData:ChangeCanBuy(name)
+    name = remove_worly_suffix(name)
     if TAB_ALL[name].canbuy then
         TAB_ALL[name].canbuy = false
         self.cannotbuy[name] = TAB_ALL[name]
@@ -199,6 +201,7 @@ end
 ]]
 function PEItemData:SetItemInfoWithoutSync(info)
     local name = info.name
+    name = remove_worly_suffix(name)
 
     if not TAB_ALL[name] then --增加物品
         local res = self:AddItem(info)
@@ -226,6 +229,7 @@ end
 --服务端调用此方法会触发到客户端和其它世界的同步
 function PEItemData:SetItemInfo(info,shard_sync)
     local name = info.name
+    name = remove_worly_suffix(name)
     local res = self:SetItemInfoWithoutSync(info)
 
     if res and IsServer then
@@ -247,6 +251,7 @@ function PEItemData:SetItemInfoWithList(infos,shard_sync)
     local res = 0
     for k,info in pairs(infos) do
         local name = info.name
+        name = remove_worly_suffix(name)
         if not self:SetItemInfoWithoutSync(info) then
             res = res + 1
         end
@@ -272,6 +277,7 @@ end
 
 
 function PEItemData:ClearItemChange(name)
+    name = remove_worly_suffix(name)
     dprint("PEItemData:ClearItemChange",name)
     if not TAB_ALL[name] or not TAB_ALL[name].origin then
         dprint("no origin",name)
@@ -296,15 +302,18 @@ function PEItemData:ClearItemChange(name)
 end
 
 function PEItemData:GetItem(name)
+    name = remove_worly_suffix(name)
     return TAB_ALL[name]
 end
 
 --返回信息的深拷贝
 function PEItemData:GetItemInfo(name)
+    name = remove_worly_suffix(name)
     return TAB_ALL[name] and deepcopy(TAB_ALL[name])
 end
 
 function PEItemData:GetItemFilter(name)
+    name = remove_worly_suffix(name)
     if TAB_ALL[name] then
         return TAB_ALL[name].filter
     end
@@ -312,6 +321,7 @@ function PEItemData:GetItemFilter(name)
 end
 
 function PEItemData:GetItemPrice(name)
+    name = remove_worly_suffix(name)
     if TAB_ALL[name] then
         return TAB_ALL[name].price
     end
@@ -319,6 +329,7 @@ function PEItemData:GetItemPrice(name)
 end
 
 function PEItemData:GetItemSellRate(name)
+    name = remove_worly_suffix(name)
     local info = TAB_ALL[name]
     if info then
         if iscoin(name) then return 1 end
@@ -331,6 +342,7 @@ end
 function PEItemData:GetItemsByNameArray(array)
     local info_list = {}
     for i,name in ipairs(array) do
+        name = remove_worly_suffix(name)
         if TAB_ALL[name] then
             table.insert(info_list, TAB_ALL[name])
         end
@@ -347,6 +359,7 @@ function PEItemData:GetBuyableItemNumOfFilter(filter)
 end
 
 function PEItemData:IsItemCanBuy(name)
+    name = remove_worly_suffix(name)
     return TAB_ALL[name] and TAB_ALL[name].canbuy
 end
 
@@ -377,10 +390,12 @@ function PEItemData:ResetWaitList()
 end
 
 function PEItemData:SetItemCanSell(name, cansell)
+    name = remove_worly_suffix(name)
     self.cantsell[name] = not cansell
 end
 
 function PEItemData:IsItemCanSell(name)
+    name = remove_worly_suffix(name)
     return not self.cantsell[name]
 end
 
