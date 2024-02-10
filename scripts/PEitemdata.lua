@@ -17,7 +17,6 @@ local PEItemData = Class(function(self)
     self.filter_num = 0 -- 面板显示的分类数量，不包括特殊分类
     self.noprice = {} -- 价格全部计算完成后仍然无价格物品列表，正常情况下CaculatePrice完成后该列表和TAB_UNPRICED都为空
     self.cannotbuy = {} -- 有价格但不能买的物品列表，键为名称，值为
-    self.wait_to_commit = {}
     self.cantsell = {} --不能售出的物品列表,键为名称，值为false代表不可售出
     self:Init()
 end)
@@ -184,123 +183,6 @@ function PEItemData:ChangeCanBuy(name)
     end
 end
 
---[[
-    info格式举例：
-    {
-        name = "log",
-        price = 100,
-        canbuy = false,
-        filter = "resource",
-        origin = { 
-            name = "log",
-            price = 7,
-            canbuy = true,
-            filter = "resource",
-        },
-    }
-]]
-function PEItemData:SetItemInfoWithoutSync(info)
-    local name = info.name
-    name = remove_worly_suffix(name)
-
-    if not TAB_ALL[name] then --增加物品
-        local res = self:AddItem(info)
-        if not res then return false end
-    else --修改物品
-        if IsServer and not info.origin then
-            local origin = TAB_ALL[name].origin or deepcopy(TAB_ALL[name]) --只保留最第一次的修改信息
-            info.origin = origin
-        else
-            TAB_ALL[name].origin = info.origin --如果是恢复物品初始信息，服务端发送的info不含origin,但要清除掉客户端信息的origin
-        end
-
-        if info.canbuy and info.canbuy ~= TAB_ALL[name].canbuy then
-            self:ChangeCanBuy(name)
-        end
-    
-        for k, v in pairs(info) do
-            TAB_ALL[name][k] = v  --只修改info里有的项目
-        end
-    end
-
-    return true
-end
-
---服务端调用此方法会触发到客户端和其它世界的同步
-function PEItemData:SetItemInfo(info,shard_sync)
-    local name = info.name
-    name = remove_worly_suffix(name)
-    local res = self:SetItemInfoWithoutSync(info)
-
-    if res and IsServer then
-        if shard_sync==nil then shard_sync = true end
-        local _info = deepcopy(TAB_ALL[name])
-        if TheWorld then
-            TheWorld.components.peworldcontext:AddChanged(_info,shard_sync)
-        else 
-            dprint("PEItemData:SetItemInfo no TheWorld") --丢掉也可以吧......
-            self.wait_to_commit[_info.name] = _info
-        end
-    end
-
-    return res
-end
-
--- 返回值为设置失败的物品数目
-function PEItemData:SetItemInfoWithList(infos,shard_sync)
-    local res = 0
-    for k,info in pairs(infos) do
-        local name = info.name
-        name = remove_worly_suffix(name)
-        if not self:SetItemInfoWithoutSync(info) then
-            res = res + 1
-        end
-    end
-
-    if IsServer then
-        if shard_sync==nil then shard_sync = true end
-        local _infos = deepcopy(infos)
-        if TheWorld then
-            TheWorld.components.peworldcontext:AddChangedWithList(_infos,shard_sync)
-        else
-            dprint("PEItemData:SetItemInfoWithList no TheWorld") --丢掉也可以吧......
-            for k,v in pairs(_infos) do
-                self.wait_to_commit[v.name] = v
-            end
-        end
-        return res
-    end
-
-    return res
-end
-
-
-
-function PEItemData:ClearItemChange(name)
-    name = remove_worly_suffix(name)
-    dprint("PEItemData:ClearItemChange",name)
-    if not TAB_ALL[name] or not TAB_ALL[name].origin then
-        dprint("no origin",name)
-        return false
-    end
-    local obj = TAB_ALL[name]
-    local origin = obj.origin
-
-    for k, _ in pairs(obj) do
-        obj[k] = nil
-    end
-
-    for k, v in pairs(origin) do
-        obj[k] = v
-    end
-
-    if IsServer then
-        TheWorld.components.peworldcontext:RemoveChanged(name,true)
-    end
-
-    return true
-end
-
 function PEItemData:GetItem(name)
     name = remove_worly_suffix(name)
     return TAB_ALL[name]
@@ -380,14 +262,7 @@ function PEItemData:RemoveItem(name)
     end
 end
 
-function PEItemData:GetWaitList()
-    return self.wait_to_commit
-end
 
-function PEItemData:ResetWaitList()
-    self.wait_to_commit = {}
-    return true
-end
 
 function PEItemData:SetItemCanSell(name, cansell)
     name = remove_worly_suffix(name)

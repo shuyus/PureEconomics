@@ -1,37 +1,61 @@
-local good = {
-
-}
-
-
-local ok = {
-	["slot_cooker"] = 
+local good_1 = {
+	["slot_gems"] = 
 	{
 		loot = 
 		{
-			goatmilk = 2,
-			butter = 3,
+			
 		},
 	},
 }
 
 
-local bad = {
-	["slot_spoiled"] = 
+local ok_1 = {
+	["slot_"] = 
 	{
 		loot = 
 		{
-			goatmilk = 2,
-			butter = 3,
+			
 		},
 	},
+}
+
+
+local bad_1 = {
+	["slot_"] = 
+	{
+		loot = 
+		{
+			
+		},
+	},
+}
+
+
+local slotmachine_data_1 = {
+	good=good_1,
+	ok=ok_1,
+	bad=bad_1
+}
+
+local slotmachine_data_2 = {
+	good=good_1,
+	ok=ok_1,
+	bad=bad_1
+}
+
+local slotmachine_data_3 = {
+	good=good_1,
+	ok=ok_1,
+	bad=bad_1
 }
 
 
 local slotmachine_data = {
-	good=good,
-	ok=ok,
-	bad=bad
+	slotmachine_data_1,slotmachine_data_2,slotmachine_data_3
 }
+
+
+return slotmachine_data
 
 --[[
 local internalloot =
@@ -710,4 +734,3 @@ local internalloot =
 		},
 	},
 }]]
-return slotmachine_data

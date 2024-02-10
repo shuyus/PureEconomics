@@ -90,8 +90,11 @@ local pe_upvaluehelper = require("3rd/PEupvaluehelper")
 G.pe_upvaluehelper = pe_upvaluehelper
 
 local PEItemData = require("PEitemdata") --核心组件，储存所有商品信息，计算合成品价格
+local PEService = require("PEservice")
 item_data = PEItemData()
+pe_service = PEService()
 G.pe_item_data = item_data
+G.pe_service = pe_service
 
 
 function Caculate_Sell_Price(inst)

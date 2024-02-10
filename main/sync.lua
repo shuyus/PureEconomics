@@ -16,7 +16,7 @@ if IsServer then
 			
 			local success, info_list = RunInSandbox(dumpdata)
 			if success and string.len(dumpdata) > 0 then
-				pe_item_data:SetItemInfoWithList(info_list,false)
+				pe_service:SetItemInfoWithList(info_list,false)
 			end
 		end
 	end
@@ -25,7 +25,7 @@ if IsServer then
 		dprint("Shard simple Sync",id,name,price,canbuy)
 		if price and id~=tonumber(TheShard:GetShardId()) then
 			if canbuy == nil then canbuy =false end
-			pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate},false)
+			pe_service:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate},false)
 		end
 	end
 	
@@ -35,7 +35,7 @@ if IsServer then
 		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
 			local success, info = RunInSandbox(dumpdata)
 			if success and string.len(dumpdata) > 0 then
-				pe_item_data:SetItemInfo(info,false)
+				pe_service:SetItemInfo(info,false)
 			end
 		end
 	end
@@ -81,7 +81,7 @@ local function PEClientSyncAll(dumpdata)
 	local success, info_list = RunInSandbox(dumpdata)
 	dprint(success,info_list)
 	if success and string.len(dumpdata) > 0 then
-		pe_item_data:SetItemInfoWithList(info_list)
+		pe_service:SetItemInfoWithList(info_list)
 	end
 end
 
@@ -90,7 +90,7 @@ local function PEClientSimpleSync(name, price, canbuy, sellrate)
 	dprint("ClientSimpleSync",name,price,canbuy,sellrate)
 	if not TheNet:GetIsServer() and price then
 		if canbuy == nil then canbuy =false end
-		pe_item_data:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate})
+		pe_service:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate})
 	end
 end
 
@@ -100,7 +100,7 @@ local function PEClientSync(dumpdata)
 	local success, info = RunInSandbox(dumpdata)
 	dprint(success,info)
 	if success and string.len(dumpdata) > 0 then
-		pe_item_data:SetItemInfo(info)
+		pe_service:SetItemInfo(info)
 	end
 end
 

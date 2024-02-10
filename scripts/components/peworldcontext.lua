@@ -7,6 +7,7 @@
 --          任何一个世界改变物品信息会发RPC到其它世界，其它世界各自发送RPC到客户端
 
 local item_data = _G.pe_item_data
+local service = _G.pe_service
 local override_list = pe_context.overrides
 local add_list = pe_context.additems
 
@@ -23,8 +24,8 @@ local PEWorldContext = Class(function(self, world)
     self.game_changed = {} -- 储存游戏内物品修改信息的列表
     self.changed = {} -- 上面两个表的合并，game_changed会覆盖同样的设置
     self.inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
-    self:AddChangedWithList(item_data:GetWaitList(),false)
-    item_data:ResetWaitList()
+    self:AddChangedWithList(service:GetWaitList(),false)
+    service:ResetWaitList()
 
     if not TheNet:IsDedicated() or TheShard:IsMaster() then
         self:MasterInit()
@@ -39,21 +40,21 @@ end)
 function PEWorldContext:MasterInit()
     dprint("PEWorldContext:MasterInit")
     for k,v in pairs(add_list) do
-        item_data:SetItemInfoWithoutSync(v)
-        local info = item_data:GetItemInfo(v.name)
+        service:SetItemInfoWithoutSync(v)
+        local info = service:GetItemInfo(v.name)
         self.file_changed[v.name] = info
         self.changed[v.name] = info
     end
 
     for k, v in pairs(override_list) do
-        item_data:SetItemInfoWithoutSync(v)
-        local info = item_data:GetItemInfo(v.name)
+        service:SetItemInfoWithoutSync(v)
+        local info = service:GetItemInfo(v.name)
         self.file_changed[v.name] = info
         self.changed[v.name] = info
     end
 end
 
--- 这个方法只应该由item_data调用
+-- 这个方法只应该由service调用
 function PEWorldContext:AddChanged(t,shard_sync)
     assert(type(t) == "table", "[PEWorldContext:AddChanged]: tbl is not table")
     self.game_changed[t.name] = t
@@ -94,7 +95,7 @@ end
 
 function PEWorldContext:SyncToClient(name, userid)
     if ThePlayer and ThePlayer.userid == userid then return end  --不开洞的房主不需要给自己发
-    local info = item_data:GetItemInfo(name)
+    local info = service:GetItemInfo(name)
     if not info then
         return false
     end
@@ -110,7 +111,7 @@ function PEWorldContext:SyncToClient(name, userid)
 end
 
 function PEWorldContext:SyncToShard(name, shardid)
-    local info = item_data:GetItemInfo(name)
+    local info = service:GetItemInfo(name)
     if not info then
         return false
     end
@@ -156,7 +157,7 @@ function PEWorldContext:OnLoad(data)
 
         if data then
             for k, v in pairs(data.game_changed) do
-                item_data:SetItemInfoWithoutSync(v)
+                service:SetItemInfoWithoutSync(v)
                 self.game_changed[v.name] = v
                 self.changed[v.name] = v
             end

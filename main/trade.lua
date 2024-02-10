@@ -66,7 +66,7 @@ if IsServer then
             canbuy = canbuy,
         }
 
-        pe_item_data:SetItemInfo(info)
+        pe_service:SetItemInfo(info)
     end
 
     AddModRPCHandler("PureEconomics", "PEedit", PEEdit)
@@ -75,7 +75,7 @@ if IsServer then
     local function PErecovery(player, name)
         dprint("PErecovery",player,name,player.Network:IsServerAdmin())
         if not player.Network:IsServerAdmin() then return end
-        pe_item_data:ClearItemChange(name)
+        pe_service:ClearItemChange(name)
     end
 
     AddModRPCHandler("PureEconomics", "PErecovery", PErecovery)
