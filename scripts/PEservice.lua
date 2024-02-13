@@ -1,14 +1,14 @@
 -- PEservice.lua
 -- Author: 勿言
--- LastEdit: 2024.2.10
--- Using: context和data之间的中间层,item_data不应该直接调用context方法
+-- LastEdit: 2024.2.13
+-- Using: context和data之间的中间层,供context使用
 
 local item_data =  pe_context.pe_item_data
 local remove_worly_suffix  = pe_context.remove_worly_suffix
 local IsServer = TheNet:GetIsServer() or TheNet:IsDedicated()
 
 local PEService= Class(function(self)
-    self.wait_to_commit = {}
+    self.wait_to_commit = {} --似乎没必要，待定
 end)
 
 --[[
@@ -45,7 +45,7 @@ function PEService:SetItemInfoWithoutSync(info)
         end
 
         if info.canbuy and info.canbuy ~= item.canbuy then
-            self:ChangeCanBuy(name)
+            item_data:ChangeCanBuy(name)
         end
     
         for k, v in pairs(info) do

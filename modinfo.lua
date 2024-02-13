@@ -28,10 +28,50 @@ server_only_mod = false
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 
-server_filter_tags = L and {"pureeconomics"} or {"纯粹经济学"}
+server_filter_tags = L and {"pureeconomics","PE"} or {"纯粹经济学","PE"}
 
 configuration_options = {
     {
+        name = "sellmulti",
+        label   = "基础售卖倍率",
+        hover   = "普通物品的售卖倍率",
+        options = {
+			{description = "10%", data = 0.1 },
+            {description = "20%", data = 0.2 },
+            {description = "25%", data = 0.25 },
+            {description = "30%", data = 0.3},
+            {description = "40%", data = 0.4 },
+            {description = "50%", data = 0.5 },
+            {description = "60%", data = 0.6 },
+            {description = "70%", data = 0.7 },
+            {description = "75%", data = 0.75 },
+            {description = "80%", data = 0.8 },
+            {description = "85%", data = 0.85 },
+            {description = "90%", data = 0.9 },
+            {description = "100%", data = 1.0 },
+        },
+        default = 0.5,
+    },{
+        name = "precioussellmulti",
+        label   = "珍贵品售卖倍率",
+        hover   = "珍贵商品售卖倍率",
+        options = {
+			{description = "10%", data = 0.1 },
+            {description = "20%", data = 0.2 },
+            {description = "25%", data = 0.25 },
+            {description = "30%", data = 0.3},
+            {description = "40%", data = 0.4 },
+            {description = "50%", data = 0.5 },
+            {description = "60%", data = 0.6 },
+            {description = "70%", data = 0.7 },
+            {description = "75%", data = 0.75 },
+            {description = "80%", data = 0.8 },
+            {description = "85%", data = 0.85 },
+            {description = "90%", data = 0.9 },
+            {description = "100%", data = 1.0 },
+        },
+        default = 0.25,
+    },{
         name = "preciousslot",
         label   = "珍贵品数量",
         hover   = "商店售卖的珍贵品数量",
@@ -60,15 +100,6 @@ configuration_options = {
         },
         default = 5,
     },{
-        name = "disablecoffee",
-        label   = "添加咖啡",
-        hover   = "是否加入咖啡",
-        options = {
-			{description = "是", data = false },
-            {description = "否", data = true },
-        },
-        default = false,
-    },{
         name = "unlock",
         label   = "解锁所有物品",
         hover   = "是否在商店中解锁所有物品",
@@ -83,6 +114,15 @@ configuration_options = {
         hover   = "是否加入抽奖机",
         options = {
             {description = "是", data = false },
+            {description = "否", data = true },
+        },
+        default = false,
+    },{
+        name = "disablecoffee",
+        label   = "添加咖啡",
+        hover   = "是否加入咖啡",
+        options = {
+			{description = "是", data = false },
             {description = "否", data = true },
         },
         default = false,

@@ -13,7 +13,7 @@ if lan == LANGUAGE.CHINESE_S or lan == LANGUAGE.CHINESE_S_RAIL or lan == LANGUAG
     L = true
 end
 
--- tips:在专服加载modmain的时候TheNet:GetIsServer()返回false
+-- tips:在专服加载modmain的时候TheNet:GetIsServer()返回false，所以使用下面的判定
 IsServer = TheNet:GetIsServer() or TheNet:IsDedicated()
 
 modimport("init/init_tuning")  --读取modinfo设置

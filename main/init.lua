@@ -18,8 +18,7 @@ else
     pe_context = G.pe_context
 end
 pe_context.G = G
-
-
+pe_context.L = L
 pe_context.IsServer = IsServer
 
 function remove_worly_suffix(prefab_str) -- 去除沃利调料后物品的后缀
@@ -35,26 +34,59 @@ function iscoin(prefab_str)
 end
 
 -- 有耐久度燃料值新鲜度的物品根据剩余百分比打折计算
--- TODO 算法待优化,提灯用光了就不值钱显然不合理
 function get_price_after_count_loss(inst,oriprice)
-	local newprice = oriprice
-	if inst.components.finiteuses  then
-		local percent = inst.components.finiteuses:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.fueled  then
-		local percent = inst.components.fueled:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.armor and inst.components.armor.maxcondition > 0  then
-		local percent = inst.components.armor:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)
-	end
-	if inst.components.perishable then
-		local percent = inst.components.perishable:GetPercent()
-		newprice = math.min(oriprice*percent,newprice)  
-	end
-	return newprice
+    local newprice = 0.6*oriprice
+
+    local classified = inst.replica.inventoryitem and inst.replica.inventoryitem.classified or inst.inventoryitem_classified
+    if classified then
+        local percent = math.min(100,classified.percentused:value())
+        newprice =  math.min(oriprice*percent,newprice)
+        local percent = math.min(100,classified.perish:value())
+        newprice =  math.min(oriprice*percent,newprice)
+        local percent = math.min(100,classified.recharge:value())
+        newprice =  math.min(oriprice*percent,newprice)
+    end
+
+    return newprice + oriprice*0.4
+--[[
+
+    local newprice = 0.6*oriprice
+    if IsServer then
+        if inst.components.finiteuses  then
+            local percent = inst.components.finiteuses:GetPercent()
+            newprice = math.min(oriprice*percent,newprice)
+        end
+        if inst.components.fueled  then
+            local percent = inst.components.fueled:GetPercent()
+            newprice = math.min(oriprice*percent,newprice)
+        end
+        if inst.components.armor and inst.components.armor.maxcondition > 0  then
+            local percent = inst.components.armor:GetPercent()
+            newprice = math.min(oriprice*percent,newprice)
+        end
+        if inst.components.rechargeable then
+            local percent = inst.components.rechargeable:GetPercent()
+            newprice = math.min(oriprice*percent,newprice)
+        end
+        if inst.components.perishable then
+            local percent = inst.components.perishable:GetPercent()
+            newprice = math.min(oriprice*percent,newprice)  
+        end
+    else
+        local classified = inst.replica.inventoryitem and inst.replica.inventoryitem.classified or inst.inventoryitem_classified
+        if classified then
+            local percent = math.min(100,classified.percentused:value())
+            newprice =  math.min(oriprice*percent,newprice)
+            local percent = math.min(100,classified.perish:value())
+            newprice =  math.min(oriprice*percent,newprice)
+            local percent = math.min(100,classified.recharge:value())
+            newprice =  math.min(oriprice*percent,newprice)
+        end
+    end
+
+    return newprice + oriprice*0.4
+]]
+
 end
 
 pe_context.remove_worly_suffix = remove_worly_suffix
