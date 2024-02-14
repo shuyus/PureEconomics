@@ -15,11 +15,17 @@ end
 
 -- tips:在专服加载modmain的时候TheNet:GetIsServer()返回false，所以使用下面的判定
 IsServer = TheNet:GetIsServer() or TheNet:IsDedicated()
+IsDedicated = TheNet:IsDedicated()
+IsHost =  IsServer and not IsDedicated
+IsMaster = IsHost or TheShard:IsMaster() --TODO 待验证
 
-modimport("init/init_tuning")  --读取modinfo设置
-modimport("init/init_assets")
-modimport("init/init_prefabs")
-modimport("init/init_recipes") --材料添加，食谱添加
+IsClientCodeArea = not IsDedicated
+
+
+modimport("init/init_tuning")  --读取modinfo设置并添加到tuning
+modimport("init/init_assets")  --注册素材
+modimport("init/init_prefabs") --注册预制物
+modimport("init/init_recipes") --材料，配方和食谱添加
 
 
 if L then
@@ -28,42 +34,27 @@ else
 	modimport("init/init_string_zh") --TODO 英文待做
 end
 
-modimport("main/init") 
-modimport("main/debug") --调试使用
+modimport("main/init")      --全局设置
+modimport("main/debug")     --调试使用
+modimport("main/rpctool")   --RPC的简单封装
+SetNameSpace("PureEconomics")
 
+dprint("modmain info",TheNet:GetIsServer(),TheNet:GetServerIsClientHosted(),TheShard:IsMaster(),TheNet:IsDedicated())
 
-if IsServer then
-    
-    dprint("modmain info",TheNet:GetIsServer(),TheNet:GetServerIsClientHosted(),TheShard:IsMaster(),TheNet:IsDedicated())
-    if not TheNet:IsDedicated() or TheShard:IsMaster() then --只有主世界需要加载数据
-        modimport("overridelist")
-        modimport("main/mod")
-        modimport("main/cantsell")
-    end
-
-    AddPlayerPostInit(function(inst)
-        inst:AddComponent("peplayercontext")
-        if PE_DEBUG then inst.components.peplayercontext:SetCash(500000) end --TODO 测试代码，待删
-
-        if inst.components.caffeinated == nil then
-            inst:AddComponent("pecaffeinated")
-        end
-
-    end)
-    AddPrefabPostInit("forest", function(inst) TheWorld:AddComponent("peworldcontext") end)
-    AddPrefabPostInit("cave", function(inst) TheWorld:AddComponent("peworldcontext") end)
+if IsMaster then --只有主世界需要加载数据
+    modimport("overridelist")
+    modimport("main/mod")
+    modimport("main/cantsell")
 end
-
-
 
 modimport("main/trade")  --交易RPC相关
 modimport("main/sync")   --同步RPC相关
 modimport("main/container") -- 容器添加
 
-AddReplicableComponent("peplayercontext")
-
-if not TheNet:IsDedicated() then
+if IsClientCodeArea then
 	modimport("main/ui")
 end
+
+modimport("main/api")  --API调用
 
 

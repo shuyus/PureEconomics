@@ -1,6 +1,6 @@
 -- peplayercontext.lua
 -- Author: 勿言
--- LastEdit: 2024.2.2
+-- LastEdit: 2024.2.14
 -- Using: 定义了客户端和世界同步需要的RPC
 
 -- 数据序列化可以使用DataDumper或json，本模组采用DataDumper(fastmode)
@@ -8,8 +8,7 @@
 -- DataDumper(fastmode)在万次测试下的效率是json.encode的2倍
 -- RunInSandbox在万次测试下的效率是json.decode的13.75倍
 
-
-if IsServer then
+do
 	local function PEShardSyncAll(id, dumpdata)
 		dprint("===shard all sync",id,dumpdata)
 		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
@@ -20,7 +19,7 @@ if IsServer then
 			end
 		end
 	end
-	
+
 	local function PEShardSimpleSync(id, name, price, canbuy, sellrate)
 		dprint("Shard simple Sync",id,name,price,canbuy)
 		if price and id~=tonumber(TheShard:GetShardId()) then
@@ -28,8 +27,8 @@ if IsServer then
 			pe_service:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate},false)
 		end
 	end
-	
-	
+
+
 	local function PEShardSync(id, dumpdata)
 		dprint("===shard sync",id,dumpdata)
 		if dumpdata and id~=tonumber(TheShard:GetShardId()) then
@@ -58,78 +57,71 @@ if IsServer then
 		end
 	end
 
-	AddShardModRPCHandler("PureEconomics", "PEshardsyncall", PEShardSyncAll) 
-	AddShardModRPCHandler("PureEconomics", "PEshardsimplesync", PEShardSimpleSync) 
-	AddShardModRPCHandler("PureEconomics", "PEshardsync", PEShardSync) 
-	AddShardModRPCHandler("PureEconomics", "PEshardcansellsync", PEShardCanSellSync)
-	AddShardModRPCHandler("PureEconomics", "PEshardcansellsync", PEShardCanSellListSync) 
-end
-
-if TheNet:IsDedicated() then
-	local __blank = function()end
-    AddClientModRPCHandler("PureEconomics", "PEclientsyncall", __blank) 
-	AddClientModRPCHandler("PureEconomics", "PEclientsimplesync", __blank) 
-	AddClientModRPCHandler("PureEconomics", "PEclientsync", __blank) 
-	AddClientModRPCHandler("PureEconomics", "PEclientprecioussync",__blank) 
-
-	return 
-end
-
-local function PEClientSyncAll(dumpdata)
-	dprint("ClientSyncAll",dumpdata)
-	if TheNet:GetIsServer() then return end  --不开洞的房主自己就是服务端，不需要执行
-	local success, info_list = RunInSandbox(dumpdata)
-	dprint(success,info_list)
-	if success and string.len(dumpdata) > 0 then
-		pe_service:SetItemInfoWithList(info_list)
-	end
+	RegisterShardModRPC("PEshardsyncall", PEShardSyncAll)
+	RegisterShardModRPC("PEshardsimplesync", PEShardSimpleSync)
+	RegisterShardModRPC("PEshardsync", PEShardSync)
+	RegisterShardModRPC("PEshardcansellsync", PEShardCanSellSync)
+	RegisterShardModRPC("PEshardcansellsync", PEShardCanSellListSync)
 end
 
 
-local function PEClientSimpleSync(name, price, canbuy, sellrate)
-	dprint("ClientSimpleSync",name,price,canbuy,sellrate)
-	if not TheNet:GetIsServer() and price then
-		if canbuy == nil then canbuy =false end
-		pe_service:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate})
+do
+
+	local function PEClientSyncAll(dumpdata)
+		dprint("ClientSyncAll",dumpdata)
+		if TheNet:GetIsServer() then return end  --不开洞的房主自己就是服务端，不需要执行
+		local success, info_list = RunInSandbox(dumpdata)
+		dprint(success,info_list)
+		if success and string.len(dumpdata) > 0 then
+			pe_service:SetItemInfoWithList(info_list)
+		end
 	end
+
+
+	local function PEClientSimpleSync(name, price, canbuy, sellrate)
+		dprint("ClientSimpleSync",name,price,canbuy,sellrate)
+		if not TheNet:GetIsServer() and price then
+			if canbuy == nil then canbuy =false end
+			pe_service:SetItemInfo({name=name,price=price,canbuy=canbuy,sellrate=sellrate})
+		end
+	end
+
+	local function PEClientSync(dumpdata)
+		dprint("Client Sync",dumpdata)
+		if TheNet:GetIsServer() then return end
+		local success, info = RunInSandbox(dumpdata)
+		dprint(success,info)
+		if success and string.len(dumpdata) > 0 then
+			pe_service:SetItemInfo(info)
+		end
+	end
+
+
+	local function PEClientPreciousSync(dumpdata)
+		dprint("Client Precious Sync",dumpdata)
+		if PE_DEBUG then
+			assert(ThePlayer,"ThePlayer is nil")
+		end
+
+		if TheNet:GetIsServer() or not ThePlayer then return end
+		if PE_DEBUG then 
+			assert(ThePlayer, "ThePlayer is nil")
+		end
+
+		local success, array = RunInSandbox(dumpdata)
+		dprint(success,array)
+		if ThePlayer and success and string.len(dumpdata) > 0 then
+			ThePlayer.replica.peplayercontext:SetPreciousArray(array) --TODO ThePlayer可能是nil
+		end
+	end
+
+	RegisterClientModRPC("PEclientsyncall", PEClientSyncAll)
+	RegisterClientModRPC("PEclientsimplesync", PEClientSimpleSync)
+	RegisterClientModRPC("PEclientsync", PEClientSync)
+	RegisterClientModRPC("PEclientprecioussync", PEClientPreciousSync)
+
 end
 
-local function PEClientSync(dumpdata)
-	dprint("Client Sync",dumpdata)
-	if TheNet:GetIsServer() then return end
-	local success, info = RunInSandbox(dumpdata)
-	dprint(success,info)
-	if success and string.len(dumpdata) > 0 then
-		pe_service:SetItemInfo(info)
-	end
-end
-
-
-local function PEClientPreciousSync(dumpdata)
-	dprint("Client Precious Sync",dumpdata)
-	if PE_DEBUG then
-		assert(ThePlayer,"ThePlayer is nil")
-	end
-
-	if TheNet:GetIsServer() or not ThePlayer then return end
-	if PE_DEBUG then 
-		assert(ThePlayer, "ThePlayer is nil")
-	end
-
-	local success, array = RunInSandbox(dumpdata)
-	dprint(success,array)
-	if ThePlayer and success and string.len(dumpdata) > 0 then
-		ThePlayer.replica.peplayercontext:SetPreciousArray(array) --TODO ThePlayer可能是nil
-	end
-end
-
-
-
-AddClientModRPCHandler("PureEconomics", "PEclientsyncall", PEClientSyncAll) 
-AddClientModRPCHandler("PureEconomics", "PEclientsimplesync", PEClientSimpleSync) 
-AddClientModRPCHandler("PureEconomics", "PEclientsync", PEClientSync) 
-
-AddClientModRPCHandler("PureEconomics", "PEclientprecioussync", PEClientPreciousSync) 
 
 
 
