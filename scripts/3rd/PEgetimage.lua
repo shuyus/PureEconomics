@@ -1,7 +1,7 @@
 -- NOTE(勿言)：这个文件我不知道从谁哪里得到的
 
-local replace_tbl = {
-    ["rock_avocado_fruit"] = "rock_avocado_fruit_rockhard",
+local replace_tbl = { --prefab名称与tex不一致时的替换表
+    ["rock_avocado_fruit"] = "rock_avocado_fruit_rockhard", --石果
 }
 local img_cache = {}
 local cant_find = {}

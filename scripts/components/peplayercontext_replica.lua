@@ -1,5 +1,9 @@
-local item_data = _G.pe_item_data
+-- peplayercontext_replica.lua
+-- Author: 勿言
+-- LastEdit: 2024.2.2
+-- Using: playercontext相关信息同步
 
+local item_data = _G.pe_item_data
 
 local PEPlayerContext = Class(function(self, inst)
     self.inst = inst

@@ -1,9 +1,14 @@
+-- mod.lua
+-- Author: 勿言
+-- LastEdit: 2024.2.15
+-- Using: 整合所有的修改配置
+
 dprint("mod.lua loaded")
 
 local name_list = {
     "overrides",
     "additems",
-    "addfilter",
+    -- "addfilter",
 }
 
 
@@ -35,7 +40,7 @@ do   -- 先应用模组修改
 
 end
 
-local filename = "mod_config_data/overridelist.lua"
+local filename = "mod_config_data/peoverridelist.lua"
 
 local function LoadModOverrideList()
     for n,t in pairs(GLOBAL.pe_context.this) do

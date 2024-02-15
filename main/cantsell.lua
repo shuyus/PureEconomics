@@ -1,3 +1,9 @@
+-- cantsell.lua
+-- Author: 勿言
+-- LastEdit: 2024.2.14
+-- Using:  不可卖物品的添加逻辑
+
+
 -- 初始不可卖的物品列表
 local cant_sell = {
     "lucy",--露西斧(谁会卖老婆啊)

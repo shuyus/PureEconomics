@@ -42,7 +42,7 @@ SetNameSpace("PureEconomics")
 dprint("modmain info",TheNet:GetIsServer(),TheNet:GetServerIsClientHosted(),TheShard:IsMaster(),TheNet:IsDedicated())
 
 if IsMaster then --只有主世界需要加载数据
-    modimport("overridelist")
+    modimport("peoverridelist")
     modimport("main/mod")
     modimport("main/cantsell")
 end

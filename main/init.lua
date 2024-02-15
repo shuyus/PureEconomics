@@ -10,7 +10,7 @@ setmetatable(G,{
 })
 
 if G.pe_context == nil then
-    pe_context = {} --本模组的上下文
+    pe_context = {} --本模组的上下文域
     G.pe_context = pe_context
     G.pe_context.mods = {}
 else
@@ -19,7 +19,12 @@ else
 end
 pe_context.G = G
 pe_context.L = L
+
 pe_context.IsServer = IsServer
+pe_context.IsDedicated = IsDedicated
+pe_context.IsHost = IsHost
+pe_context.IsMaster = IsMaster
+pe_context.IsClientCodeArea = IsClientCodeArea
 
 function remove_worly_suffix(prefab_str) -- 去除沃利调料后物品的后缀
 	prefab_str=string.gsub(prefab_str,"_spice_chili","")

@@ -5,11 +5,11 @@
 如果你想重新应用本文件的修改，请先移除 主世界 存档目录下的同名文件
 
 服务器文件所在：
-你的存档目录/Master/save/mod_config_data/overridelist.lua
+你的存档目录/Master/save/mod_config_data/peoverridelist.lua
 主机文件所在：
-Documents/Klei/DoNotStarveTogether/你的个人文件夹/你的存档目录/Master/save/mod_config_data/overridelist.lua
+Documents/Klei/DoNotStarveTogether/你的个人文件夹/你的存档目录/Master/save/mod_config_data/peoverridelist.lua
 主机(没开洞穴)文件所在：
-Documents/Klei/DoNotStarveTogether/你的个人文件夹/client_save/mod_config_data/overridelist.lua
+Documents/Klei/DoNotStarveTogether/你的个人文件夹/client_save/mod_config_data/peoverridelist.lua
 ---------------------------------------------------------------------------------------------------
 如果你对代码一窍不通，你只需要修改下面表中两条虚线之间的代码即可，其它的不要动
 下方的所有示例都不会被实际应用到游戏中
@@ -59,13 +59,6 @@ local can_not_sell = {
 ------------------------------------------------------------------------------------
 --  下面的所有代码请勿修改
 ------------------------------------------------------------------------------------
-local add_filters = {
-
-    --{name = "newfilter", zh ="新分类名",en = "New Type Name"}, 
-    ------------------------------------------------
-    
-    -------------------------------------------------
-}
 
 GLOBAL.pe_context.this = {
 
@@ -73,10 +66,8 @@ GLOBAL.pe_context.this = {
 
 GLOBAL.pe_context.this.overrides = override_list
 GLOBAL.pe_context.this.additems = add_items
-GLOBAL.pe_context.this.addfilter = add_filters
 GLOBAL.pe_context.this.cantsell = can_not_sell
 
 override_list = nil
 add_items = nil
-add_filters = nil
 can_not_sell= nil

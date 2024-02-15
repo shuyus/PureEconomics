@@ -1,3 +1,8 @@
+-- ui.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: 添加主界面UI
+
 local Button = require("widgets/button")
 local Text = require "widgets/text"
 local UIAnim = require "widgets/uianim"

@@ -1,3 +1,7 @@
+-- debug.lua
+-- Author: 勿言
+-- LastEdit: 2024.1.31
+-- Using: DEBUG相关
 
 G.PE_DEBUG = true
 

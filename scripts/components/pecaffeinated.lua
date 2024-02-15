@@ -1,3 +1,8 @@
+-- pecaffeinated.lua
+-- Author: 勿言
+-- LastEdit: 2024.2.2
+-- Using: 咖啡加速的组件
+
 local PECaffeinated = Class(function(self, inst)
 	self.inst = inst
 	self.mult = 1
